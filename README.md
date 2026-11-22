@@ -9,6 +9,7 @@ How much rooftop solar and how many EV chargers can an NZ-style low-voltage stre
 - It tests EV charging, Australia A inverter settings and a transformer tap.
 - It checks its own maths against hand calculations and a published solution, and it lists what it cannot tell you.
 - Author: Aniket Bailwal, Electrical and Electronic Engineering student, University of Auckland.
+- Website with the results, the checks and the limits: https://abai936.github.io/pv-ev-hosting-capacity/
 
 ## Results at a glance
 
@@ -134,7 +135,7 @@ See [DATA.md](DATA.md). The IEEE feeder files are **not included**: no licence i
 
 ## Status
 
-Version 0.9. Simulation only. The engineering stages are built and tested. UI polish is still to do.
+Version 0.9. Simulation only. The engineering stages are built and tested, and the results website is live (link above). Next steps: a better source for the cable ratings, a rating sweep around the assumed value, and a second feeder.
 
 ## Licence
 
