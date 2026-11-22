@@ -1,0 +1,45 @@
+<!DOCTYPE html><html lang="en-NZ"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="A simulated study of PV and EV hosting capacity on a low-voltage feeder (OpenDSS and Python). Simulated, synthetic data, v0.9."><link rel="icon" type="image/svg+xml" href="/pv-ev-hosting-capacity/favicon.svg"><title>About | Simulated, v0.9</title><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/pv-ev-hosting-capacity/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CnDxeVtR.js"></script><!-- Motion gate: only when motion is allowed. Hides the hero until motion.ts starts its entrance;
+         if motion.ts has not started within 2.5 s (slow or failed JS), the hero is shown as is. --><script>
+      (function () {
+        if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+        var d = document.documentElement;
+        d.classList.add('js-motion');
+        setTimeout(function () { if (!d.classList.contains('motion-ready')) d.classList.remove('js-motion'); }, 2500);
+      })();
+    </script><link rel="stylesheet" href="/pv-ev-hosting-capacity/_astro/Base.CXfMDhgC.css"><style>[data-astro-transition-scope="astro-gyrtbwwo-1"] { view-transition-name: astro-gyrtbwwo-1; }@layer astro { ::view-transition-old(astro-gyrtbwwo-1) { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }::view-transition-new(astro-gyrtbwwo-1) { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back]::view-transition-old(astro-gyrtbwwo-1) { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back]::view-transition-new(astro-gyrtbwwo-1) { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; } }[data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-gyrtbwwo-1"],
+			[data-astro-transition-fallback="old"][data-astro-transition-scope="astro-gyrtbwwo-1"] { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-gyrtbwwo-1"],
+			[data-astro-transition-fallback="new"][data-astro-transition-scope="astro-gyrtbwwo-1"] { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }[data-astro-transition=back][data-astro-transition-fallback="old"] [data-astro-transition-scope="astro-gyrtbwwo-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="old"][data-astro-transition-scope="astro-gyrtbwwo-1"] { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeOut; }[data-astro-transition=back][data-astro-transition-fallback="new"] [data-astro-transition-scope="astro-gyrtbwwo-1"],
+			[data-astro-transition=back][data-astro-transition-fallback="new"][data-astro-transition-scope="astro-gyrtbwwo-1"] { 
+	animation-duration: 0.22s;
+	animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+	animation-fill-mode: both;
+	animation-name: astroFadeIn; }</style></head><body><a class="skip-link" href="#main">Skip to main content</a><div data-astro-transition-persist="banner"><div class="banner" role="note" aria-label="What this site shows"><span class="banner-mark" aria-hidden="true"></span><p class="banner-text">Simulated. Synthetic NZ-parameterised data. Cable ratings assumed. One feeder. v0.9.</p></div></div><header data-astro-transition-persist="site-header" class="site-header"><span class="site-title">PV + EV hosting capacity</span><nav aria-label="Main"><a href="/pv-ev-hosting-capacity/">Home</a><a href="/pv-ev-hosting-capacity/method/">Method and checks</a><a href="/pv-ev-hosting-capacity/about/" aria-current="page">About</a></nav></header><main data-astro-transition-scope="astro-gyrtbwwo-1" id="main"><section id="about" aria-labelledby="h-about"><p class="kicker">About</p><h1 id="h-about">About this project</h1><p>I am Aniket Bailwal, an Electrical and Electronic Engineering student at the University of Auckland. This is one simulation project, at version 0.9, about how much rooftop solar and how many EV chargers a 55-house NZ-style low-voltage street can take.</p></section><section id="authorship" aria-labelledby="h-auth"><h2 id="h-auth">How this was built</h2><div class="box sign"><p><strong>I designed and directed this using generative AI tools: the code was written with AI coding assistants, and every result went through tests and an independent review.</strong></p><p>What I decided: the question, the scope and the assumptions. What I reviewed: the results and the checks listed with their limits on the Method and checks page. The tests and hand checks were drafted with AI coding assistants and run by them.</p><p>I am working through the hand checks myself.</p></div><p>An independent review step checked the results as well.</p></section><section id="next" aria-labelledby="h-next"><h2 id="h-next">What I would do next</h2><p>My judgement, not a result:</p><ul><li>Get a real rating source from an NZ distribution engineer.</li><li>A 1-minute worst-week re-run to measure what 30-minute steps hide.</li><li>A rating sweep around the assumed value, to show how much the results depend on it.</li><li>A second feeder.</li></ul></section></main><footer class="site-footer"><div><div><p>Load and EV profiles are derived from Steidl, Zabala Figueroa et al., "High-resolution residential energy load profiles under varying electrification scenarios for NZ and Germany using resLoadSIM", Zenodo v1, 8 May 2025, <code>https://zenodo.org/records/15362256</code> (linked below), licensed CC BY 4.0. The data are synthetic and NZ-parameterised. Aggregated to 30 minutes and scaled; changes were made by the author.</p><p>Feeder layout (hero drawing): IEEE PES European LV Test Feeder, simplified redraw from the bus coordinates; no licence stated; not an IEEE figure.</p><p>This is a simulation study, v0.9. The code is MIT licensed; the data keep their own terms. Data sources are on the method page:</p><ul><li><a href="/pv-ev-hosting-capacity/method/">Method and checks</a></li></ul></div><div><p>Source links (all read 19 Nov 2026):</p><ul><li><a href="https://www.ea.govt.nz/documents/9545/Decision_paper_-_Maximising_benefits_from_local_electricity_generation.pdf" rel="noopener noreferrer">Electricity Authority decision paper, 7 Apr 2026</a></li><li><a href="https://www.ea.govt.nz/documents/9799/Export_limits_-_information_sheet.pdf" rel="noopener noreferrer">Electricity Authority information sheet, Export limits</a></li><li><a href="https://www.oriongroup.co.nz/assets/Connections/Orion-Congestion-Management-Policy-1-April-2026.pdf" rel="noopener noreferrer">Orion Congestion Management Policy, 1 Apr 2026</a></li><li><a href="https://zenodo.org/records/15362256" rel="noopener noreferrer">Steidl et al. dataset (Zenodo)</a></li></ul></div></div></footer><script type="module" src="/pv-ev-hosting-capacity/_astro/Base.astro_astro_type_script_index_0_lang.DjO4TFFa.js"></script></body></html>
