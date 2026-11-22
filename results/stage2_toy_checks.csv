@@ -1,0 +1,16 @@
+case,quantity,hand_value,opendss_value,error_pct
+1 load 50kW+20kvar,load bus V_LL [V],399.9980,399.9980,0.0000
+1 PV -50kW,load bus V_LL [V],426.6771,426.6771,0.0000
+1 PV -50kW,rise above source [V],11.6771,11.6771,0.0001
+2 1ph 7.4kW,V phase a [V],225.4535,225.4535,0.0000
+2 1ph 7.4kW,V phase b [V],232.9696,232.9696,0.0000
+2 1ph 7.4kW,V phase c [V],231.1285,231.1285,0.0000
+2 1ph -7.4kW,V phase a [V],236.1481,236.1481,0.0000
+2 1ph -7.4kW,V phase b [V],228.9800,228.9800,0.0000
+2 1ph -7.4kW,V phase c [V],230.8383,230.8383,0.0000
+3 xfmr src 1.0pu tap 1.0,secondary phase V [V],240.1777,240.1777,-0.0000
+3 xfmr src 1.0pu tap 1.0,secondary on 230 V base [pu],1.0443,1.0443,-0.0000
+3 xfmr src 1.05pu tap 1.0,secondary phase V [V],252.1866,252.1866,-0.0000
+3 xfmr src 1.05pu tap 1.0,secondary on 230 V base [pu],1.0965,1.0965,-0.0000
+3 xfmr src 1.0pu tap 1.025,secondary phase V [V],234.3197,234.3197,-0.0000
+3 xfmr src 1.0pu tap 1.025,secondary on 230 V base [pu],1.0188,1.0188,-0.0000

@@ -1,0 +1,5 @@
+case,model,v_min_V,v_max_V,minutes_above_253V,minutes_below_207V,max_line_loading_pct_assumed_ratings,xfmr_max_kVA,nonconverged_steps,note
+base_no_pv,original,222.76,243.68,0,0,85.7,62.72,0,"synthetic NZ-parameterised feeder; SYNTHETIC half-sine irradiance; simulated, not measured"
+base_no_pv,neutral_return_k1,221.99,243.68,0,0,85.9,62.87,0,"synthetic NZ-parameterised feeder; SYNTHETIC half-sine irradiance; simulated, not measured"
+pv_55x5kVA_no_control,original,232.93,263.75,481,0,202.1,251.1,0,"synthetic NZ-parameterised feeder; SYNTHETIC half-sine irradiance; simulated, not measured"
+pv_55x5kVA_no_control,neutral_return_k1,231.68,264.25,483,0,201.7,250.61,0,"synthetic NZ-parameterised feeder; SYNTHETIC half-sine irradiance; simulated, not measured"

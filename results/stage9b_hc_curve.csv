@@ -1,0 +1,10 @@
+penetration,n_pv,n_customers,HC_kW,binding_limit,binding_element,source_pu,load_case,placement,rating_status,label
+0.05,3,55,20.0,none (>= 20 kW),,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+0.1,6,55,19.59,voltage-high,load36@676.2,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+0.15,9,55,15.16,voltage-high,load37@682.2,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+0.2,11,55,11.06,voltage-high,load29@562.1,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+0.3,17,55,9.5,line,line1,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+0.45,25,55,6.33,line,line1,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+0.6,33,55,5.03,line,line1,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+0.8,44,55,3.8,line,line1,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+1.0,55,55,2.72,line,line1,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed

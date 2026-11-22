@@ -1,0 +1,129 @@
+---
+// Hand-written SVG chart: hosting capacity vs share of houses with solar (simulated).
+// Static SVG, so it works with no JavaScript. Tooltips are CSS only (hover or keyboard focus).
+// Binding limit is shown by text label AND marker shape: circle = cable (assumed rating), triangle = voltage (253 V), square = mixed.
+import data from '../data/chart_hc_vs_penetration.json';
+
+const W = 420, H = 380;
+const L = 40, R = 14, T = 44, B = 40;
+const pw = W - L - R, ph = H - T - B;
+const YMAX = 12; // kW; axis starts at zero
+const x = (pct: number) => L + (pct / 100) * pw;
+const y = (kw: number) => T + ph - (kw / YMAX) * ph;
+
+const kind = (b: string) => (b.startsWith('line') ? 'cable' : b.startsWith('voltage') ? 'voltage' : b);
+const shape = (k: string) => (k === 'cable' ? 'circle' : k === 'voltage' ? 'triangle' : 'square');
+const p3kind = (c: Record<string, number>) => {
+  const ks = new Set(Object.keys(c).map(kind));
+  return ks.size === 1 ? [...ks][0] : 'mixed';
+};
+const p3count = (c: Record<string, number>) =>
+  Object.entries(c).map(([k, v]) => `${kind(k)} ${v}`).join(', ');
+
+// Points at the same x are nudged sideways by a few px so they do not hide each other.
+const DX: Record<string, number> = { P1: -7, P2: 7, P3: 0 };
+const pts = [
+  ...data.P1.map((d) => ({ s: 'P1', pen: d.penetration_pct, v: d.hc_kw, k: kind(d.binding_limit), tip: `P1 balanced, ${d.penetration_pct}%: ${d.hc_kw} kW, limit: ${kind(d.binding_limit)}` })),
+  ...data.P2.map((d) => ({ s: 'P2', pen: d.penetration_pct, v: d.hc_kw, k: kind(d.binding_limit), tip: `P2 end-clustered, ${d.penetration_pct}%: ${d.hc_kw} kW, limit: ${kind(d.binding_limit)}` })),
+  ...data.P3.map((d) => ({ s: 'P3', pen: d.penetration_pct, v: d.p50_kw, k: p3kind(d.binding_counts), tip: `P3 random, ${d.penetration_pct}%: P5 ${d.p5_kw.toFixed(1)}, P50 ${d.p50_kw.toFixed(1)}, P95 ${d.p95_kw.toFixed(1)} kW; limit: ${p3count(d.binding_counts)} of ${d.n_orders}` })),
+];
+const line = (s: string) => pts.filter((p) => p.s === s).map((p) => `${x(p.pen) + DX[s]},${y(p.v)}`).join(' ');
+const band = [
+  ...data.P3.map((d) => `${x(d.penetration_pct)},${y(d.p95_kw)}`),
+  ...[...data.P3].reverse().map((d) => `${x(d.penetration_pct)},${y(d.p5_kw)}`),
+].join(' ');
+const ticksY = [0, 2, 4, 6, 8, 10, 12];
+const ticksX = [0, 30, 60, 100];
+const f = (n: number) => n.toFixed(1);
+---
+<figure class="chart">
+  <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-labelledby="hc-t hc-d" class="chart-svg">
+    <title id="hc-t">Simulated hosting capacity against share of houses with solar</title>
+    <desc id="hc-d">Three placements: balanced, end-clustered and random with a 5th to 95th percentile band. Each point is labelled with its binding limit. Values are in the table below.</desc>
+    {ticksY.map((t) => (<g><line x1={L} x2={W - R} y1={y(t)} y2={y(t)} class="grid" /><text x={L - 6} y={y(t) + 4} class="tick" text-anchor="end">{t}</text></g>))}
+    {ticksX.map((t) => (<text x={x(t)} y={T + ph + 16} class="tick" text-anchor="middle">{t}%</text>))}
+    <line x1={L} x2={L} y1={T} y2={T + ph} class="axis" />
+    <line x1={L} x2={W - R} y1={T + ph} y2={T + ph} class="axis" />
+    <text x={L + pw / 2} y={H - 6} class="axlabel" text-anchor="middle">Share of houses with solar</text>
+    <text x="12" y={T + ph / 2} class="axlabel" text-anchor="middle" transform={`rotate(-90 12 ${T + ph / 2})`}>kW per solar house</text>
+    <line x1={L} x2={W - R} y1={y(10)} y2={y(10)} class="cap" />
+    <text x={W - R - 2} y={y(10) - 4} class="tick" text-anchor="end">10 kW cap (Orion-style)</text>
+    <polygon points={band} class="band" />
+    <polyline points={line('P3')} class="ln p3" />
+    <polyline points={line('P1')} class="ln p1" />
+    <polyline points={line('P2')} class="ln p2" />
+    {pts.map((p) => {
+      const cx = x(p.pen) + DX[p.s], cy = y(p.v);
+      const sh = shape(p.k);
+      const above = p.s !== 'P2';
+      return (
+        <g class="pt" tabindex="0" role="img" aria-label={p.tip}>
+          <title>{p.tip}</title>
+          {sh === 'circle' && <circle cx={cx} cy={cy} r="5" class="mk cable" />}
+          {sh === 'triangle' && <polygon points={`${cx},${cy - 6} ${cx - 6},${cy + 5} ${cx + 6},${cy + 5}`} class="mk volt" />}
+          {sh === 'square' && <rect x={cx - 5} y={cy - 5} width="10" height="10" class="mk mixed" />}
+          <text x={cx} y={above ? cy - 10 : cy + 19} class="ptlabel" text-anchor="middle">{p.s} {p.k}</text>
+          <text x={L} y="16" class="tip">{p.tip}</text>
+        </g>
+      );
+    })}
+    <text x={L} y="34" class="hint">Hover or Tab to a point to read it here.</text>
+  </svg>
+  <ul class="legend">
+    <li><svg width="22" height="12" aria-hidden="true"><line x1="0" x2="22" y1="6" y2="6" class="ln p1" /></svg> P1 balanced (solid line)</li>
+    <li><svg width="22" height="12" aria-hidden="true"><line x1="0" x2="22" y1="6" y2="6" class="ln p2" /></svg> P2 end-clustered (dotted line)</li>
+    <li><svg width="22" height="12" aria-hidden="true"><rect x="0" y="1" width="22" height="10" class="band" /><line x1="0" x2="22" y1="6" y2="6" class="ln p3" /></svg> P3 random: dashed median, band is the 5th to 95th percentile of 50 orders</li>
+    <li><svg width="14" height="12" aria-hidden="true"><circle cx="7" cy="6" r="5" class="mk cable" /></svg> circle: cable limit (assumed rating)</li>
+    <li><svg width="14" height="12" aria-hidden="true"><polygon points="7,0 1,11 13,11" class="mk volt" /></svg> triangle: voltage limit (253 V)</li>
+    <li><svg width="14" height="12" aria-hidden="true"><rect x="2" y="1" width="10" height="10" class="mk mixed" /></svg> square: mixed (random orders hit different limits)</li>
+  </ul>
+  <figcaption>
+    <strong>Simulated.</strong> Hosting capacity per solar house against the share of houses with solar, midday summer snapshot, one 55-house street, synthetic NZ-parameterised load (L2). Cable ratings are assumed, source 1.00 pu, per phase. Points at the same share are nudged sideways. Source: <code>{data.source_file}</code>. The 10 kW line is a different setup from the Electricity Authority's: per phase here, per connection for the EA.
+  </figcaption>
+  <details class="chart-table">
+    <summary>Data table</summary>
+    <table>
+      <caption class="sr-only">Simulated hosting capacity in kW per solar house</caption>
+      <thead><tr><th scope="col">Placement</th><th scope="col">Share with solar</th><th scope="col">kW per house</th><th scope="col">Binding limit</th></tr></thead>
+      <tbody>
+        {data.P1.map((d) => (<tr><th scope="row">P1 balanced</th><td>{d.penetration_pct}%</td><td>{d.hc_kw}</td><td>{kind(d.binding_limit)}</td></tr>))}
+        {data.P2.map((d) => (<tr><th scope="row">P2 end-clustered</th><td>{d.penetration_pct}%</td><td>{d.hc_kw}</td><td>{kind(d.binding_limit)}</td></tr>))}
+        {data.P3.map((d) => (<tr><th scope="row">P3 random, P5 / P50 / P95</th><td>{d.penetration_pct}%</td><td>{f(d.p5_kw)} / {f(d.p50_kw)} / {f(d.p95_kw)}</td><td>{p3count(d.binding_counts)} (of {d.n_orders})</td></tr>))}
+      </tbody>
+    </table>
+  </details>
+</figure>
+<style>
+  .chart { max-width: 40rem; }
+  /* Wide screens: plot on the left, legend, caption and table beside it, so the plot can be large. */
+  @media (min-width: 56rem) {
+    .chart { display: grid; grid-template-columns: minmax(0, 36rem) minmax(0, 1fr); gap: 0 var(--s-5); align-items: start; }
+    .chart .chart-svg { grid-row: 1 / span 3; }
+    .chart .legend, .chart figcaption, .chart .chart-table { grid-column: 2; margin-top: 0; }
+  }
+  .chart-svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--grid); }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .axis { stroke: var(--ink); stroke-width: 1.2; }
+  .tick, .hint { font: 11px var(--font-head); fill: var(--ink); }
+  .axlabel { font: 600 12px var(--font-head); fill: var(--ink); }
+  .cap { stroke: var(--ink-soft); stroke-width: 1; stroke-dasharray: 2 3; }
+  .band { fill: var(--signal); fill-opacity: 0.16; stroke: none; }
+  .ln { fill: none; stroke-width: 2; }
+  .p1 { stroke: var(--ink); }
+  .p2 { stroke: var(--ink); stroke-dasharray: 2 4; }
+  .p3 { stroke: var(--signal); stroke-dasharray: 7 4; }
+  .mk { stroke: var(--ink); stroke-width: 1.5; }
+  .mk.cable { fill: var(--limit-fill); } /* ink outline gives the shape edge */
+  .mk.volt { fill: var(--signal); }
+  .mk.mixed { fill: #fff; }
+  .ptlabel { font: 600 10px var(--font-head); fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+  .tip { display: none; font: 600 11px var(--font-head); fill: var(--ink); }
+  .pt:hover .tip, .pt:focus .tip { display: block; }
+  .pt:focus { outline: none; }
+  .pt:focus .mk { stroke-width: 3.5; stroke: var(--limit-text); }
+  .legend { list-style: none; padding: 0; margin: 0.6rem 0; font-size: 0.9rem; }
+  .legend li { margin: 0.2rem 0; display: flex; gap: 0.5rem; align-items: center; }
+  .legend svg { flex: none; }
+  .chart-table table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+  .chart-table th, .chart-table td { border: 1px solid var(--grid); padding: 0.3rem 0.5rem; text-align: left; }
+</style>

@@ -1,0 +1,2 @@
+customer,p_kw,lines_on_path,predicted_V,opendss_V,error_pct,note
+load53,5.0,151,4.787218186817685,4.786654038925519,-0.011784461667515404,current = P / solved customer voltage

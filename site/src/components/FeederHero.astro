@@ -1,0 +1,57 @@
+---
+// Hero drawing of the simulated feeder. The SVG is built by site/scripts/build_feeder_svg.py
+// (line geometry only: no bus names, impedances or ratings).
+// It is split into two stacked SVG layers with the same viewBox, so they line up exactly:
+//   base = network branches + transformer, top = amber trunk + load dots (aria-hidden duplicate-free split).
+// With no JS or with reduced motion this is a flat, static, final drawing. motion.ts adds the draw-in
+// and (fine pointer only) a small 3D tilt where the top layer sits slightly in front.
+import svg from '../assets/feeder.svg?raw';
+
+const open = svg.match(/^<svg[^>]*>/)![0];
+const trunk = svg.match(/<path id="trunk"[^>]*\/>/)![0];
+const loads = svg.match(/<g class="loads">[\s\S]*?<\/g>/)![0];
+const baseSvg = svg.replace(trunk, '').replace(loads, '').replace('class="feeder-svg"', 'class="feeder-svg layer-base"');
+const topSvg = open.replace('class="feeder-svg"', 'class="feeder-svg layer-top" aria-hidden="true"')
+  + trunk.replace('id="trunk" ', '') + loads + '</svg>';
+---
+<figure class="feeder-hero">
+  <div
+    class="feeder-art"
+    role="img"
+    aria-label="Simplified drawing of the simulated 55-house feeder (not to scale, not a real network)"
+  >
+    <div class="feeder-stage">
+      <Fragment set:html={baseSvg} />
+      <Fragment set:html={topSvg} />
+    </div>
+  </div>
+  <ul class="feeder-legend">
+    <li><span class="sw-trunk" aria-hidden="true"></span>Amber: assumed trunk cable rating</li>
+    <li><span class="sw-dot" aria-hidden="true"></span>Dots: the 55 houses</li>
+    <li>Simulated, not to scale</li>
+  </ul>
+  <figcaption>
+    Simplified drawing of the simulated IEEE European LV test feeder. Amber marks the 4c_70 trunk cable segments; the limit binds at the
+    segment next to the transformer. Simulated, not to scale.
+  </figcaption>
+</figure>
+
+<style>
+  .feeder-hero { margin: 0; }
+  .feeder-art { width: 100%; max-width: 40rem; margin: 0 auto; }
+  .feeder-stage { position: relative; }
+  .feeder-art :global(svg) { display: block; width: 100%; height: auto; }
+  .feeder-art :global(svg.layer-top) { position: absolute; inset: 0; }
+  .feeder-art :global(path) {
+    stroke: var(--ink, #0B1620);
+    stroke-width: 1.25px;
+    vector-effect: non-scaling-stroke;
+  }
+  .feeder-art :global(path.trunk) {
+    stroke: var(--limit, #C27400);
+    stroke-width: 3.5px;
+  }
+  .feeder-art :global(.loads circle) { fill: var(--ink, #0B1620); }
+  .feeder-art :global(.tx) { fill: var(--ink, #0B1620); }
+  figcaption { margin-top: 0.75rem; font-size: 0.9rem; max-width: 40rem; margin-inline: auto; }
+</style>

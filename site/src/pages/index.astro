@@ -1,0 +1,300 @@
+---
+import Base from '../layouts/Base.astro';
+import ResultCard from '../components/ResultCard.astro';
+import Figure from '../components/Figure.astro';
+import TradeoffCard from '../components/TradeoffCard.astro';
+import LimitsPanel from '../components/LimitsPanel.astro';
+import SourceList from '../components/SourceList.astro';
+import AuthorshipBox from '../components/AuthorshipBox.astro';
+import HcChart from '../components/HcChart.astro';
+import TradeoffChart from '../components/TradeoffChart.astro';
+import Math from '../components/Math.astro';
+import FeederHero from '../components/FeederHero.astro';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sim = 'Simulated. Cable rating assumed (no rating in the feeder file), so read thermal results as relative, not absolute. Source 1.00 pu.';
+---
+<Base title="Can an NZ street take more rooftop solar and EV chargers? | Simulated, v0.9">
+  <!-- 1. Hero -->
+  <section id="hero" aria-labelledby="h-hero">
+    <div class="hero-grid">
+      <div class="hero-text">
+      <p class="kicker">PV + EV hosting capacity, OpenDSS and Python</p>
+      <h1 id="h-hero">Can an NZ street take more rooftop solar and EV chargers?</h1>
+      <ol>
+        <li>I simulated one 55-house low-voltage street in OpenDSS and Python.</li>
+        <li>I asked how much solar each house can export, and how many EV chargers can run at once.</li>
+        <li>The cable heating limit hits before voltage does.</li>
+        <li>Everything here is simulated, with synthetic data.</li>
+      </ol>
+      <p class="hero-actions">
+        <a class="btn btn-primary" href="#flagship">See the result</a>
+        <a class="btn btn-ghost" href={`${base}/method/`}>How it was checked</a>
+      </p>
+      <div class="hero-key">
+        <p class="kicker">Key result</p>
+        <ul class="cards">
+          <ResultCard label="Hosting capacity, 60% of houses with solar" value="5.0" unit="kW per solar house" caveat={sim + ' Limit: assumed trunk cable rating.'} source="results/stage8_summary.md (M0, P1 balanced)" limit />
+        </ul>
+      </div>
+      </div>
+      <FeederHero />
+    </div>
+    <nav class="jump" aria-label="Jump to a section">
+      <span class="jump-label">Jump to</span>
+      <a href="#flagship">Result</a>
+      <a href="#tradeoff">Trade-off</a>
+      <a href="#checks">How it was checked</a>
+      <a href="#limits">What this cannot tell you</a>
+      <a href="#uptake">Uptake</a>
+    </nav>
+    <p>The feeder has 55 customers and 907 buses. The NZ low-voltage limit used is 207 to 253 V (230 V, plus or minus 10%, since 13 Nov 2025). Sources: <code>README.md</code> and <code>research/R3-nz-standards-and-limits.md</code>.</p>
+    <div class="box">
+      <h2 class="box-title">Words used on this page</h2>
+      <ul>
+        <li><strong>Hosting capacity</strong>: the most solar (in kW) each solar house can export before something breaks a limit.</li>
+        <li><strong>pu</strong>: per unit. Here 1 pu is 230 V.</li>
+        <li><strong>Customer-hours</strong>: hours counted for each customer, added up. Two customers over the limit for one hour is two customer-hours.</li>
+        <li><strong>Binding limit</strong>: the limit that is hit first, so it sets the answer.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2. Why this matters now -->
+  <section id="why-now" aria-labelledby="h-why">
+    <p class="kicker">NZ context</p>
+    <h2 id="h-why">NZ lines companies are setting solar export limits right now.</h2>
+    <ol>
+      <li>On 7 Apr 2026 the Electricity Authority decided a default static export limit of 10 kW for small-scale solar, and a standard export limit assessment method.</li>
+      <li>Dates from the EA information sheet: 11 May 2026 (10 kW default), 11 Sep 2026 ("Australia A" inverter settings for all new low-voltage generation applications), 11 Nov 2026 (assessment methods required).</li>
+      <li>Orion publishes how it works out hosting capacity: a load-flow model of each LV network, with export raised "in increments of 1 kW per phase" until a voltage or thermal limit or a 10 kW per phase cap.</li>
+      <li>This project uses the same kind of question, per phase, and the Australia A settings. It is similar in shape, not identical, and it does not implement the EA's new assessment method.</li>
+    </ol>
+    <p><strong>Per connection (EA) is not the same as per phase (this project and Orion). Do not compare the numbers.</strong> The EA sheet also says studies "may only consider current hosting capacity", so forecasts are not part of today's rules.</p>
+    <h3>Sources</h3>
+    <SourceList items={[
+      { label: 'EA decision paper, 7 Apr 2026', url: 'https://www.ea.govt.nz/documents/9545/Decision_paper_-_Maximising_benefits_from_local_electricity_generation.pdf' },
+      { label: 'EA information sheet, Export limits (11 May / 11 Sep / 11 Nov 2026 dates)', url: 'https://www.ea.govt.nz/documents/9799/Export_limits_-_information_sheet.pdf' },
+      { label: 'Orion Congestion Management Policy, applies from 1 Apr 2026 (issued 30 Mar 2026), section 8', url: 'https://www.oriongroup.co.nz/assets/Connections/Orion-Congestion-Management-Policy-1-April-2026.pdf' },
+      { label: 'EA 2019 consultation paper on hosting capacity (cover dated 3 May 2019)', url: 'https://www.ea.govt.nz/documents/2643/Integrating_hosting_capacity_into_small-scale_distributed_generation_connectio_Rzuz8pa.pdf' },
+    ]} />
+  </section>
+
+  <!-- 3. Flagship result -->
+  <section id="flagship" aria-labelledby="h-flag">
+    <p class="kicker">Flagship result</p>
+    <h2 id="h-flag">The cable heats up before the voltage gets too high.</h2>
+    <ol>
+      <li>With solar spread evenly, each solar house can export 9.5 / 5.0 / 2.7 kW when 30 / 60 / 100% of houses have solar.</li>
+      <li>At 60% the limit is the assumed rating of the trunk cable next to the transformer.</li>
+      <li>Voltage alone would allow 6.0 kW at 60%.</li>
+      <li>The source voltage setting is a big assumption: at 1.05 pu the 60% result falls to 0.9 kW.</li>
+    </ol>
+    <ul class="cards">
+      <ResultCard label="Hosting capacity, 30% of houses with solar" value="9.5" unit="kW per solar house" caveat={sim} source="results/stage8_summary.md (M0, P1 balanced)" limit />
+      <ResultCard label="Hosting capacity, 60% of houses with solar" value="5.0" unit="kW per solar house" caveat={sim + ' Limit: assumed trunk cable rating.'} source="results/stage8_summary.md (M0, P1 balanced)" limit />
+      <ResultCard label="Hosting capacity, 100% of houses with solar" value="2.7" unit="kW per solar house" caveat={sim} source="results/stage8_summary.md (M0, P1 balanced)" limit />
+      <ResultCard volt label="Voltage-only limit at 60%" value="6.0" unit="kW" caveat={'Simulated. What voltage alone would allow if cable ratings were ignored. Source 1.00 pu.'} source="results/stage6_snapshot_summary.md" />
+      <ResultCard label="Result at 60% if the source is set to 1.05 pu" value="0.9" unit="kW" caveat="Simulated. Shows how much the source voltage assumption matters. The base case is 1.00 pu." source="results/stage6_snapshot_summary.md" />
+      <ResultCard label="Random placement at 60%, 5th / 50th / 95th percentile" value="3.1 / 3.9 / 4.7" unit="kW" caveat={sim} source="results/stage6_snapshot_summary.md" />
+    </ul>
+    <p>When the cable rating is the limit, the hosting capacity per solar house follows from a simple balance (the Stage 4 load case; worked example on the <a href={`${base}/method/#maths`}>Method page</a>):</p>
+    <Math display label="Hosting capacity equals rated current times voltage plus local load, divided by number of houses" tex={String.raw`HC = \frac{I_{\text{rating}}\, V + P_{\text{local}}}{n_{\text{houses}}}`} />
+    <HcChart />
+    <details class="png-fallback">
+      <summary>Static image of the same question (PNG)</summary>
+      <p>This earlier figure uses the first feeder load case (L1), so its values differ slightly from the chart above (L2, NZ summer midday).</p>
+      <Figure id="cp04_hc_vs_penetration" eager={false}
+      alt="Simulated line chart of hosting capacity in kW against the share of houses with solar, with a shaded band for the P3 random-placement range."
+      caption="Simulated hosting capacity against the share of houses with solar, with the P3 random-placement band." />
+    </details>
+    <Figure id="cp06_hc_nz_vs_feeder"
+      alt="Simulated chart comparing hosting capacity with NZ summer-midday load against the feeder's own load shape."
+      caption="Simulated hosting capacity with the NZ summer-midday load against the feeder's own load shape." />
+    <p><strong>Caveat:</strong> Simulated. Cable rating assumed (no rating in the feeder file), so read thermal results as relative, not absolute. Source 1.00 pu.</p>
+  </section>
+
+  <!-- 4. Trade-off and failure card -->
+  <section id="tradeoff" aria-labelledby="h-trade">
+    <p class="kicker">Trade-off and failure card</p>
+    <h2 id="h-trade">Inverter settings fix voltage, but not the cable limit.</h2>
+    <ol>
+      <li>Australia A volt-var and volt-watt settings cut the year's time above 253 V from 1,330 to 38.5 customer-hours.</li>
+      <li>They do not raise the snapshot hosting capacity: 9.3 / 4.9 / 2.7 kW with control, 9.5 / 5.0 / 2.7 kW without.</li>
+      <li>The cost is more current in the cables: hours with any line above its assumed rating go from 326.5 to 582.5, and the transformer peak from 195.1 to 216.6 kVA.</li>
+      <li>A 2.5% lower transformer tap helps clustered solar (5.4 to 7.5 kW at 30%) but cuts the lowest evening voltage with no EVs from 233.25 V to 227.08 V.</li>
+    </ol>
+    <ul class="cards">
+      <ResultCard volt label="Customer-hours above 253 V in the year, without and with inverter control" value="1,330 to 38.5" unit="customer-hours" caveat="Simulated year (8 kWp on 60% of houses). Curve points are from free summaries, not the paywalled AS/NZS 4777.2." source="results/stage8_summary.md" />
+      <ResultCard label="Snapshot hosting capacity at 30 / 60 / 100%, with control" value="9.3 / 4.9 / 2.7" unit="kW" caveat="Simulated. Without control it is 9.5 / 5.0 / 2.7 kW. The assumed trunk cable rating binds." source="results/stage8_summary.md" limit />
+      <ResultCard label="Hours with any line above its assumed rating, without and with control" value="326.5 to 582.5" unit="hours" caveat="Simulated. Cable ratings assumed. Control adds reactive current in the cables." source="results/stage8_summary.md" limit />
+      <ResultCard label="Transformer peak, without and with control" value="195.1 to 216.6" unit="kVA" caveat="Simulated. The transformer is rated 800 kVA (nameplate, assumed)." source="results/stage8_summary.md" />
+      <ResultCard label="Clustered solar at 30%, tap lowered by 2.5%" value="5.4 to 7.5" unit="kW" caveat="Simulated. The price is lower evening voltage: lowest customer voltage with no EVs goes from 233.25 V to 227.08 V." source="results/stage8_summary.md" />
+    </ul>
+    <TradeoffCard title="Failure story: a bug found in review" kind="limit">
+      <p>A bug was found: OpenDSS inverter control keeps its previous state, so 730 of 1,272 hosting-capacity values depended on the order they were solved in. The largest shift was 1.07 kW. A cold-start step and a regression test fixed it.</p>
+      <p>An independent review step found it; the fix was written with an AI coding assistant. Sources: <code>CP-08-stage8-mitigation.md</code>, <code>tests/test_stage8.py</code>, <code>VALIDATION.md</code> row 28.</p>
+    </TradeoffCard>
+    <TradeoffChart />
+    <details class="png-fallback">
+      <summary>Static images of the same trade-off (PNG)</summary>
+    <Figure id="cp08_hc_mitigation"
+      alt="Simulated bar chart of hosting capacity with and without inverter control and with and without a lower transformer tap."
+      caption="Simulated hosting capacity with and without inverter control and tap." />
+    <Figure id="cp08_year_curtailment"
+      alt="Simulated year charts of hours above 253 V, hours above the assumed line rating, and curtailed energy."
+      caption="Simulated year: hours above 253 V, hours above the assumed line rating, curtailed energy." />
+    </details>
+    <Figure id="cp03_invcontrol"
+      alt="Simulated bar chart of the highest customer voltage on one synthetic clear day for 55 houses with 5 kVA solar each, with no solar, with solar and no control, and with solar and Australia A volt-var plus volt-watt control, against the 253 V NZ upper limit."
+      caption="Simulated, one synthetic clear day: 55 houses with 5 kVA solar each. The highest customer voltage with no solar, with solar and no control, and with Australia A volt-var and volt-watt control, against the 253 V upper limit. The control lowers the peak voltage but, in this run, customer voltage still goes above 253 V." />
+    <p><strong>Caveat:</strong> Curve points are from free summaries, not the paywalled AS/NZS 4777.2. Var priority (watts cut first) is an assumption with no source (<code>LIMITATIONS.md</code> item 11). The bias is mixed.</p>
+  </section>
+
+  <!-- 5. How I know -->
+  <section id="checks" aria-labelledby="h-checks">
+    <p class="kicker">How the model was checked</p>
+    <h2 id="h-checks">What I checked, and what I did not.</h2>
+    <ol>
+      <li>The 907-bus feeder matches the published OpenDSS solution to 0.003 V (worst case, with constant-power loads) and the GridLAB-D one to 0.001 V.</li>
+      <li>Toy circuits match hand phasor calculations to 4 decimals.</li>
+      <li>One hand check: 5 kW at the far-end house raises the voltage by 4.787 V by hand and 4.787 V in OpenDSS.</li>
+      <li>Not checked: PV, EV, inverter and rating results have no independent source, and the energy balances only prove signs and units.</li>
+    </ol>
+    <ul class="cards">
+      <ResultCard label="Worst gap to the published OpenDSS solution" value="0.003" unit="V" caveat="With constant-power loads. The benchmark runs the original 1.05 pu set-up, not our 1.00 pu base case." source="VALIDATION.md row 6; results/stage3_benchmark.csv" />
+      <ResultCard label="Worst gap to the published GridLAB-D solution" value="0.001" unit="V" caveat="Same caveat: original 1.05 pu set-up." source="VALIDATION.md row 7" />
+      <ResultCard label="Hand check: 5 kW at the far-end house, voltage rise" value="4.787" unit="V (hand and OpenDSS)" caveat="The hand check shares a helper (path resistance) with the model, so it is not fully independent of it." source="results/stage4_hand_check.csv" />
+    </ul>
+    <p>The hand check uses the far-end voltage rise, with <code>I</code> found from the solved voltage:</p>
+    <Math display label="Voltage rise equals path resistance times current" tex={String.raw`\Delta V = R_{\text{path}}\, I, \qquad I = \frac{P}{V}`} />
+    <Figure id="cp02_single_phase"
+      alt="Simulated toy circuit: a single-phase load on a three-phase line, hand-calculated value next to the OpenDSS value."
+      caption="Toy circuit, simulated: a single-phase load on a three-phase line, hand value against OpenDSS." />
+    <Figure id="cp02_transformer_noload"
+      alt="Simulated transformer no-load voltage at three source and tap settings, hand value next to the OpenDSS value."
+      caption="Transformer no-load voltage at three source and tap settings, hand value against OpenDSS (simulated)." />
+    <Figure id="cp03_base_case"
+      alt="Simulated voltages on the 907-bus feeder in the NZ base case with no solar."
+      caption="NZ base case on the 907-bus feeder, simulated voltages with no solar." />
+    <p><strong>Caveat:</strong> The hand checks share a helper (path resistance) with the model, so they are not fully independent of it (<code>VALIDATION.md</code> weak spot 2). The benchmark runs the original 1.05 pu set-up, not our 1.00 pu base case (weak spot 3). The full table has 32 rows. See <a href={`${base}/method/`}>Method and checks</a>.</p>
+  </section>
+
+  <!-- 6. EV result as a range -->
+  <section id="ev" aria-labelledby="h-ev">
+    <p class="kicker">EV result as a range</p>
+    <h2 id="h-ev">How many EV chargers at once? Two to six of 55 houses, depending on the evening.</h2>
+    <ol>
+      <li>On a typical winter weekday evening, 6 of 55 houses can charge a 7.4 kW EV at the same time with balanced placement.</li>
+      <li>On one busy evening it is 2 of 55 (3.6%).</li>
+      <li>With random placement the count is 2 / 5 / 7 (5th, 50th, 95th percentile of 50 orders).</li>
+      <li>The binding limit is the assumed trunk cable rating; voltage never binds before 30 EVs. A 5% rating change moved the count from 6 to 9.</li>
+    </ol>
+    <ul class="cards">
+      <ResultCard label="EVs charging at once, typical winter weekday evening" value="6" unit="of 55 houses" caveat="Simulated, balanced placement, 7.4 kW chargers. The count depends on the assumed trunk rating (a step function)." source="results/stage7_summary.md" limit />
+      <ResultCard label="EVs charging at once, one busy evening" value="2" unit="of 55 houses (3.6%)" caveat="Simulated. Cable rating assumed." source="results/stage7_summary.md" limit />
+      <ResultCard label="Random placement, 5th / 50th / 95th percentile of 50 orders" value="2 / 5 / 7" unit="EVs" caveat="Simulated. Cable rating assumed." source="results/stage7_summary.md" />
+    </ul>
+    <Figure id="cp07_ev_hc_vs_placement"
+      alt="Simulated chart of the number of EVs that can charge at once for different placements of the chargers."
+      caption="Simulated number of EVs charging at once, by placement of the chargers." />
+    <Figure id="cp07_year_ev_lowvoltage"
+      alt="Simulated year with EV charging and no solar: left, hours with any customer below 207 V; right, hours with a cable above its assumed rating, with no EVs and with more EVs added."
+      caption="Simulated year (2022, 30-minute steps, no solar): hours with any customer below 207 V (left) and hours with the main cable type above its assumed rating (right), with no extra EVs and with more EVs added. More EVs raise the cable hours much more than the low-voltage hours. Ratings assumed." />
+    <p><strong>Caveat:</strong> The count depends on the assumed trunk rating (a step function). The EV session median of 6.9 kWh is from a search snippet only (<code>LIMITATIONS.md</code> item 2).</p>
+  </section>
+
+  <!-- 7. A whole year -->
+  <section id="year" aria-labelledby="h-year">
+    <p class="kicker">A whole year</p>
+    <h2 id="h-year">Over a year, 8 kWp per house is a lot more than 5 kWp.</h2>
+    <ol>
+      <li>17,520 half-hour steps for 2022, with 60% of houses on solar.</li>
+      <li>5 kWp per house gives 4.5 customer-hours above 253 V; 8 kWp gives 1,330.</li>
+      <li>Even with no solar, a cable rating (mostly the trunk) is exceeded for 141.5 hours a year.</li>
+      <li>So thermal results are relative, not absolute.</li>
+    </ol>
+    <ul class="cards">
+      <ResultCard volt label="Customer-hours above 253 V, 5 kWp per house" value="4.5" unit="customer-hours" caveat="Simulated, 2022, 60% of houses on solar. 30-minute steps average away short peaks, so this is too low." source="results/stage6_year.csv (case Y2)" />
+      <ResultCard volt label="Customer-hours above 253 V, 8 kWp per house" value="1,330" unit="customer-hours" caveat="Simulated, 2022, 60% of houses on solar. 30-minute steps average away short peaks, so this is too low." source="results/stage6_year.csv (case Y3)" />
+      <ResultCard label="Hours with a cable above its assumed rating, no solar" value="141.5" unit="hours a year" caveat="Simulated. Ratings assumed. Any line, mostly the trunk." source="results/stage6_year.csv (case Y0)" limit />
+    </ul>
+    <Figure id="cp06_year_violations"
+      alt="Simulated year (2022) bar charts for four cases, Y0 (no solar), Y1 (3 kWp), Y2 (5 kWp) and Y3 (8 kWp). Left, customer-hours above 253 V: 0, 0, 4 and 1,330. Right, hours with any line above its assumed rating: 142, 58, 46 and 326."
+      caption="Simulated year (2022), four cases Y0 to Y3 (0, 3, 5 and 8 kWp per house). Left: customer-hours above 253 V. Right: hours with any line above its assumed rating." />
+    <p><strong>Caveat:</strong> 30-minute steps average away short peaks, so violation hours are too low (<code>LIMITATIONS.md</code> item 4).</p>
+  </section>
+
+  <!-- 8. Limits panel -->
+  <section id="limits" aria-labelledby="h-limits">
+    <p class="kicker">Limits</p>
+    <h2 id="h-limits">What this cannot tell you.</h2>
+    <LimitsPanel>
+      <ol>
+        <li>Simulation only; no measured data; no real feeder compared.</li>
+        <li>Cable ratings are assumed. A 5% change moved the EV count from 6 to 9.</li>
+        <li>Synthetic load: every house is statistically identical, which tends to make results look better than reality.</li>
+        <li>30-minute steps hide short peaks.</li>
+        <li>One feeder: nothing certain about other networks.</li>
+      </ol>
+      <p>Source: <code>LIMITATIONS.md</code> items 1, 3, 4, 6, 9. The full list has 16 items, most with a bias direction.</p>
+    </LimitsPanel>
+    <Figure id="cp04_sensitivity"
+      alt="Simulated bar chart of what moves hosting capacity at 60% of houses with solar: source voltage, neutral return and cable rating changes, with the binding limit labelled on each bar."
+      caption="Simulated sensitivity of hosting capacity at 60% of houses with solar: source voltage settings, no neutral return and cable ratings scaled down and up. The bars show the source voltage assumption moves the answer most, and that the binding limit changes from line to voltage as it rises. This figure uses load case L1 (5.08 and 0.74 kW), while the text numbers use the NZ load L2 (5.0 and 0.9 kW), so the two differ; read the order of the effects, not the exact values." />
+    <Figure id="cp05_profiles"
+      alt="Simulated synthetic NZ load, solar and EV profiles used as inputs."
+      caption="The synthetic NZ load, solar and EV profiles used as inputs (simulated, not measured)." />
+  </section>
+
+  <!-- 9. Uptake -->
+  <section id="uptake" aria-labelledby="h-uptake">
+    <p class="kicker">Forecast, not prediction</p>
+    <h2 id="h-uptake">What if this street looked like NZ in 2027?</h2>
+    <p><strong>Forecast, not prediction.</strong> These are modelled forecasts from national data (EA solar, Ministry of Transport EVs via Figure.NZ). They are not measurements and not predictions for this feeder.</p>
+    <ol>
+      <li>A simple "last year's trend" model beat the S-curve and driver models in the back-test (mean absolute error in percentage points of share: solar 0.13, EV 0.92).</li>
+      <li>The 80% ranges were too narrow: they held the truth only 40% (solar) and 27% (EV) of the time.</li>
+      <li>Solar share of houses, low / mid / high, Dec 2027: 5.0 / 5.1 / 5.6%. A system the size of today's new ones first exceeds the simulated limit at about 34% penetration. Caveat: the hosting capacity is kW per single-phase solar customer, while a typical new system is whole-house size, so this is a rough comparison, not like for like.</li>
+    </ol>
+    <p>The Electricity Authority says studies may only consider current hosting capacity, and it will consider forecast uptake in a future policy consultation. This back-test is a small step in that direction. My forecast is national solar and EV share, not low-voltage DG uptake, and its ranges were too narrow.</p>
+    <ul class="cards">
+      <ResultCard label="Back-test mean absolute error, solar and EV" value="0.13 and 0.92" unit="percentage points of share" caveat="Forecast, not prediction. Only 3 back-test origins." source="results/stage9b_summary.md" />
+      <ResultCard label="80% ranges that held the truth, solar and EV" value="40% and 27%" caveat="Forecast, not prediction. The ranges were too narrow." source="results/stage9b_summary.md" />
+      <ResultCard label="Solar share of houses, low / mid / high, Dec 2027" value="5.0 / 5.1 / 5.6" unit="%" caveat="Forecast, not prediction. National share, not this feeder." source="results/stage9b_summary.md" />
+      <ResultCard label="Penetration at which a system of today's size first exceeds the simulated limit" value="about 34" unit="%" caveat="Forecast, not prediction. Simulated limit with assumed cable ratings. With 4 solar houses of 55 the simulated hosting capacity is 18.5 kW per house. Caveat: the hosting capacity is kW per single-phase solar customer, while a typical new system is whole-house size, so this is a rough comparison, not like for like." source="results/stage9b_summary.md" />
+      <ResultCard label="Battery EVs per connection, low / mid / high, Dec 2027" value="4.7 / 5.4 / 9.4" unit="%" caveat="Forecast, not prediction. An upper bound on the share of houses with an EV." source="results/stage9b_summary.md" />
+    </ul>
+    <Figure id="cp09b_scenarios_vs_hc"
+      alt="Simulated chart of forecast uptake scenarios for 2027 and 2028 against the feeder's simulated hosting capacity limits. Forecast, not prediction."
+      caption="Forecast, not prediction: modelled national uptake scenarios against the feeder's simulated limits." />
+    <Figure id="cp09b_backtest"
+      alt="Simulated chart of the uptake back-test: forecast errors for several models over three test origins."
+      caption="Back-test of the uptake models (forecast, not prediction)." />
+    <p><strong>Caveat:</strong> Forecast, not prediction. Only 3 back-test origins. The EV forecast probably underestimates.</p>
+  </section>
+
+  <!-- 10. Authorship -->
+  <section id="built" aria-labelledby="h-built">
+    <p class="kicker">Authorship</p>
+    <h2 id="h-built">How this was built</h2>
+    <AuthorshipBox>
+      <p>I am working through the hand checks myself.</p>
+      <p>More on the <a href={`${base}/about/`}>About page</a>.</p>
+    </AuthorshipBox>
+  </section>
+
+  <!-- 11. Links and next -->
+  <section id="next" aria-labelledby="h-next">
+    <p class="kicker">Links and next</p>
+    <h2 id="h-next">Links and what I would do next</h2>
+    <p>What I would do next (my judgement, believed):</p>
+    <ul>
+      <li>Get a real rating source from an NZ distribution engineer.</li>
+      <li>A 1-minute worst-week re-run to measure what 30-minute steps hide.</li>
+      <li>A rating sweep around the assumed value, to show how much the results depend on it.</li>
+      <li>A second feeder.</li>
+    </ul>
+    <p>Read the checks and limits: <a href={`${base}/method/`}>Method and checks</a> (<code>VALIDATION.md</code> and <code>LIMITATIONS.md</code> in the project files).</p>
+  </section>
+</Base>

@@ -1,0 +1,28 @@
+claim,value_text,source_file,readme_text
+PV HC balanced 30/60/100 pct (M0),9.5 / 5.0 / 2.7 kW,results/stage8_summary.md,9.5 / 5.0 / 2.7 kW
+PV HC random 60 pct P5/P50/P95,| L2 | 0.6 | 5.0 | 4.0 | 3.1 | 3.9 | 4.7 |,results/stage6_snapshot_summary.md,3.1 / 3.9 / 4.7 kW
+PV HC voltage-only at 60 pct,| P1 | 0.6 | 33 | L2 | 5.0 | 5.0 | 6.0 |,results/stage6_snapshot_summary.md,6.0 kW
+PV HC at source 1.05 pu 60 pct,| 1.05 | 0.9 | 0.9 |,results/stage6_snapshot_summary.md,0.9 kW
+Year Y3 8 kWp customer-hours above 253 V,"2022,Y3,8.0,33,17520,0,1330.0,207.5",results/stage6_year.csv,"1,330 customer-hours"
+Year Y2 5 kWp customer-hours above 253 V,"2022,Y2,5.0,33,17520,0,4.5,1.0",results/stage6_year.csv,4.5 customer-hours
+Year Y0 no PV distinct hours line above rating,"2022,Y0,0.0,0,17520,0,0.0,0.0,0.0,0.0,208.56,245.2,4005.0,141.5",results/stage6_year.csv,141.5 hours
+EV HC balanced typical evening,P1_direct | 6 | 10.9,results/stage7_summary.md,6 of 55
+EV HC busy evening,2 of 55 (3.6 %),results/stage9b_summary.md,2 of 55 (3.6 %)
+EV HC random P5/P50/P95,| 2/5/7 |,results/stage7_summary.md,2/5/7
+Control cuts customer-hours above 253 V,1330.0 to 38.5,results/stage8_summary.md,38.5 customer-hours
+HC with Australia A control,9.3 / 4.9 / 2.7 kW,results/stage8_summary.md,9.3 / 4.9 / 2.7 kW
+Line overload hours with control,326.5 (M0) to 582.5,results/stage8_summary.md,582.5
+Transformer peak with control,195.1 to 216.6 kVA,results/stage8_summary.md,195.1 to 216.6 kVA
+Volt-watt only customer-hours,1302.0 customer-hours,results/stage8_summary.md,"1,302 customer-hours"
+Volt-watt only curtailed energy,48.3 kWh,results/stage8_summary.md,48.3 kWh
+Tap 0.975 on P2 at 30 pct,5.4 to 7.5 kW,results/stage8_summary.md,5.4 to 7.5 kW
+Tap effect on lowest EV-evening voltage,233.25 V to 227.08 V,results/stage8_summary.md,233.25 V to 227.08 V
+PV share of houses Dec 2027 low/mid/high,5.0/5.1/5.6 %,results/stage9b_summary.md,5.0/5.1/5.6 %
+Average new PV system Dec 2027,8.6/9.0/10.6,results/stage9b_summary.md,8.6/9.0/10.6 kW
+BEV per residential connection Dec 2027,4.7/5.4/9.4 %,results/stage9b_summary.md,4.7/5.4/9.4 %
+HC with 4 PV houses,18.5 kW,results/stage9b_summary.md,18.5 kW
+Back-test band coverage,40 % (PV) / 27 % (EV),results/stage9b_summary.md,40 % (PV) / 27 % (EV)
+Back-test naive error,"PV 0.13, EV 0.92",results/stage9b_summary.md,"PV 0.13, EV 0.92"
+System size that first exceeds HC,about 34 % penetration,results/stage9b_summary.md,about 34 % penetration
+Far-end voltage rise hand check,4.787218,results/stage4_hand_check.csv,4.787
+Benchmark worst difference,0.003 V worst,VALIDATION.md,0.003 V

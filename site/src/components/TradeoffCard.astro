@@ -1,0 +1,8 @@
+---
+interface Props { title: string; kind?: 'sign' | 'limit'; }
+const { title, kind = 'sign' } = Astro.props;
+---
+<div class:list={['box', kind]}>
+  <h3>{title}</h3>
+  <slot />
+</div>

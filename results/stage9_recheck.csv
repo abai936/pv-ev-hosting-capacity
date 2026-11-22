@@ -1,0 +1,18 @@
+check,quantity,expected,got,error,tolerance,unit,pass,how_expected,status
+S4 far-end rise 5 kW,rise at load53,4.787218186817685,4.786654038925519,-0.000564147892165856,0.14361654560453055,V,True,Re(sum Z)*P/V_solved (shares path_r with model),PASS
+S7 EV nominal current,I = 7400/230,32.17391304347826,32.17391304347826,0.0,0.01,A,True,P/V,PASS
+S7 EV far-end drop 7.4 kW,drop at load53,7.460249731744397,7.462144830866009,0.0018950991216124535,0.2238074919523319,V,True,Re(sum Z)*P/V_solved (shares path_r with model),PASS
+S8 volt-var Q at 1.0826 pu,Q,-1.5,-1.499988294986311,1.170501368896737e-05,0.1,kvar,True,-0.60*(1.0826-1.0435)/(1.1217-1.0435)*5 kVA,PASS
+S8 volt-var P at 50% sun,P,2.5,2.5000000000000004,4.440892098500626e-16,0.05,kW,True,"0.5 x 5 kW, no clipping",PASS
+S3 benchmark constant_P,max |dV| min 1 vs OpenDSS,0.0,0.000495816091472534,0.000495816091472534,0.05,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark constant_P,max |dV| min 1 vs GridLAB-D,0.0,9.293917173636146e-06,9.293917173636146e-06,0.05,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark constant_P,max |dV| min 566 vs OpenDSS,0.0,0.00279541473230438,0.00279541473230438,0.05,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark constant_P,max |dV| min 566 vs GridLAB-D,0.0,0.0011868313518448304,0.0011868313518448304,0.05,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark constant_P,max |dV| min 1440 vs OpenDSS,0.0,0.000532421377585024,0.000532421377585024,0.05,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark constant_P,max |dV| min 1440 vs GridLAB-D,0.0,2.804019948143832e-05,2.804019948143832e-05,0.05,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark default_loads,max |dV| min 1 vs OpenDSS,0.0,0.024475417529515653,0.024475417529515653,1.0,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark default_loads,max |dV| min 1 vs GridLAB-D,0.0,0.024490737528594764,0.024490737528594764,1.0,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark default_loads,max |dV| min 566 vs OpenDSS,0.0,0.40009011883245194,0.40009011883245194,1.0,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark default_loads,max |dV| min 566 vs GridLAB-D,0.0,0.3999731188324631,0.3999731188324631,1.0,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark default_loads,max |dV| min 1440 vs OpenDSS,0.0,0.09070033250651477,0.09070033250651477,1.0,V,True,"published solution, 55 load nodes",PASS
+S3 benchmark default_loads,max |dV| min 1440 vs GridLAB-D,0.0,0.09052133250651195,0.09052133250651195,1.0,V,True,"published solution, 55 load nodes",PASS

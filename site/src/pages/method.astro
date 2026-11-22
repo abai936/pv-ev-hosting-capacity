@@ -1,0 +1,204 @@
+---
+import Base from '../layouts/Base.astro';
+import Figure from '../components/Figure.astro';
+import LimitsPanel from '../components/LimitsPanel.astro';
+import Math from '../components/Math.astro';
+import SourceList from '../components/SourceList.astro';
+---
+<Base title="Method and checks | Simulated, v0.9">
+  <section id="checks" aria-labelledby="h-m-checks">
+    <p class="kicker">Method and checks</p>
+    <h1 id="h-m-checks">What I checked, and what I did not.</h1>
+    <p>Everything on this site is simulated: OpenDSS on the IEEE European LV Test Feeder, synthetic NZ-parameterised load, modelled solar, assumed cable ratings. Nothing is measured.</p>
+
+    <h2>The checks ladder</h2>
+    <p>Each rung says what was compared, the result, and what it does not prove. The status word is written out and has its own shape, so it does not depend on colour: a filled square means an independent source, a half circle means a hand calculation, a dashed square means no independent check.</p>
+    <ol class="ladder">
+      <li class="rung">
+        <div class="rung-head"><span class="status ind">Checked against an independent source</span></div>
+        <div class="rung-body">
+          <h3>907-bus feeder against the published OpenDSS solution</h3>
+          <dl>
+            <dt>Compared</dt><dd>Our model against the solution published with the feeder, constant-power loads, 55 load nodes.</dd>
+            <dt>Result</dt><dd>0.003 V worst case, with constant-power loads.</dd>
+            <dt>Does NOT prove</dt><dd class="no">It runs the original 1.05 pu set-up, not our 1.00 pu base case (weak spot 3). It tests the feeder and the load model, not PV, EVs, inverters or ratings.</dd>
+            <dt>Source</dt><dd><code>VALIDATION.md</code> row 6; <code>results/stage3_benchmark.csv</code></dd>
+          </dl>
+        </div>
+      </li>
+      <li class="rung">
+        <div class="rung-head"><span class="status ind">Checked against an independent source</span></div>
+        <div class="rung-body">
+          <h3>Same feeder against the published GridLAB-D solution</h3>
+          <dl>
+            <dt>Compared</dt><dd>Our model against the second published solution.</dd>
+            <dt>Result</dt><dd>0.001 V worst case.</dd>
+            <dt>Does NOT prove</dt><dd class="no">Same original 1.05 pu set-up, same limits as above.</dd>
+            <dt>Source</dt><dd><code>VALIDATION.md</code> row 7</dd>
+          </dl>
+        </div>
+      </li>
+      <li class="rung">
+        <div class="rung-head"><span class="status hand">Checked against hand calculation</span></div>
+        <div class="rung-body">
+          <h3>Toy circuits against hand phasor calculations</h3>
+          <dl>
+            <dt>Compared</dt><dd>Small circuits solved by hand and in OpenDSS.</dd>
+            <dt>Result</dt><dd>Match to 4 decimals.</dd>
+            <dt>Does NOT prove</dt><dd class="no">Small circuits only; says nothing about the full 907-bus feeder.</dd>
+            <dt>Source</dt><dd><code>results/stage2_toy_checks.csv</code></dd>
+          </dl>
+        </div>
+      </li>
+      <li class="rung">
+        <div class="rung-head"><span class="status hand">Checked against hand calculation</span></div>
+        <div class="rung-body">
+          <h3>Hand check: 5 kW at the far-end house</h3>
+          <dl>
+            <dt>Compared</dt><dd>Voltage rise predicted from path resistance against the OpenDSS solve.</dd>
+            <dt>Result</dt><dd>4.787 V by hand and 4.787 V in OpenDSS.</dd>
+            <dt>Does NOT prove</dt><dd class="no">The hand check shares a helper (path resistance) with the model, so it is not fully independent of it (weak spot 2).</dd>
+            <dt>Source</dt><dd><code>results/stage4_hand_check.csv</code> (hand 4.787218, OpenDSS 4.786654, error -0.012%)</dd>
+          </dl>
+        </div>
+      </li>
+      <li class="rung">
+        <div class="rung-head"><span class="status hand">Checked against hand calculation</span></div>
+        <div class="rung-body">
+          <h3>Cable-limit hosting capacity at 100% penetration</h3>
+          <dl>
+            <dt>Compared</dt><dd>A hand formula in the Stage 4 report against the OpenDSS search.</dd>
+            <dt>Result</dt><dd>2.88 kW by hand, 2.91 kW in OpenDSS (+1.0%).</dd>
+            <dt>Does NOT prove</dt><dd class="no">Not a test, only a report calculation. The 195 A cable rating it uses is assumed, not sourced.</dd>
+            <dt>Source</dt><dd><code>VALIDATION.md</code> row 17; <code>checkpoints/CP-04-stage4-snapshot-hc.md</code></dd>
+          </dl>
+        </div>
+      </li>
+      <li class="rung">
+        <div class="rung-head"><span class="status none">Not independently checked</span></div>
+        <div class="rung-body">
+          <h3>Energy balances</h3>
+          <dl>
+            <dt>Compared</dt><dd>Load plus losses minus PV against the energy at the transformer, in the same run.</dd>
+            <dt>Result</dt><dd>Closes to within 0.003% (worst case).</dd>
+            <dt>Does NOT prove</dt><dd class="no">Any converged power flow passes. It catches a missed or double-counted element, not a wrong model. It is bookkeeping.</dd>
+            <dt>Source</dt><dd><code>VALIDATION.md</code> rows 24 to 26</dd>
+          </dl>
+        </div>
+      </li>
+      <li class="rung">
+        <div class="rung-head"><span class="status none">Not independently checked</span></div>
+        <div class="rung-body">
+          <h3>PV, EV, inverter and cable-rating results</h3>
+          <dl>
+            <dt>Compared</dt><dd>Code against its own inputs, and curve points against free summaries.</dd>
+            <dt>Result</dt><dd>Tests pass; no independent source exists for these results.</dd>
+            <dt>Does NOT prove</dt><dd class="no">That the numbers match a real network. Ratings are assumed, and no measured data were used.</dd>
+            <dt>Source</dt><dd><code>VALIDATION.md</code> weak spots 3, 4, 7 and 8; <code>LIMITATIONS.md</code></dd>
+          </dl>
+        </div>
+      </li>
+    </ol>
+    <p>The full list has 32 rows in <code>VALIDATION.md</code>.</p>
+
+    <Figure id="cp02_single_phase"
+      alt="Simulated toy circuit: a single-phase load on a three-phase line, hand-calculated value next to the OpenDSS value."
+      caption="Toy circuit, simulated: a single-phase load on a three-phase line, hand value against OpenDSS." />
+    <Figure id="cp02_transformer_noload"
+      alt="Simulated transformer no-load voltage at three source and tap settings, hand value next to the OpenDSS value."
+      caption="Transformer no-load voltage at three source and tap settings, hand value against OpenDSS (simulated)." />
+
+    <h2>Test run, with its limits</h2>
+    <p>Many tests check the code against its own inputs. Test counts are not a measure of how close the model is to a real network.</p>
+    <p class="small">Source: <code>STATE.md</code>.</p>
+
+    <h2>What is NOT checked</h2>
+    <LimitsPanel>
+      <ul>
+        <li>PV, EV, inverter and rating results have no independent source.</li>
+        <li>The energy balances only prove signs and units.</li>
+        <li>No comparison with a real network or with measured data.</li>
+        <li>The inverter curve points come from free summaries, not the paywalled AS/NZS 4777.2. Var priority (watts cut first) is an assumption with no source.</li>
+        <li>The feeder file has no cable ratings. Ratings are assumed from datasheets matched by cable size, so thermal results are relative, not absolute.</li>
+        <li>This work does not implement the Electricity Authority's new export limit assessment method.</li>
+      </ul>
+      <p>Full list with bias directions: <code>LIMITATIONS.md</code> (16 items). Check table: <code>VALIDATION.md</code>. Assumptions: <code>ASSUMPTIONS.md</code>.</p>
+    </LimitsPanel>
+  </section>
+
+  <section id="maths" aria-labelledby="h-maths">
+    <p class="kicker">Worked examples</p>
+    <h2 id="h-maths">The maths, in short</h2>
+    <p>Worked examples, written with AI assistance; I am working through these checks myself. Every formula and number below is already in the project files, with its source beside it. They are simulated and hand-calculated values, not measurements.</p>
+
+    <div class="box formula">
+      <h3>Voltage rise at the far end</h3>
+      <Math display label="Voltage rise equals path resistance times current, with current equal to power over voltage" tex={String.raw`\Delta V = R_{\text{path}}\, I, \qquad I = \frac{P}{V}`} />
+      <p>For 5 kW at the far-end house: 4.787218 V by hand and 4.786654 V in OpenDSS. Here <Math tex={String.raw`R_{\text{path}}`} /> is the real part of the cable impedance summed along the path to that house.</p>
+      <p class="src">Source: <code>results/stage4_hand_check.csv</code></p>
+    </div>
+
+    <div class="box formula">
+      <h3>No-load voltage</h3>
+      <Math display label="Phase voltage equals 416 over root 3 times the per-unit source voltage" tex={String.raw`V = \frac{416}{\sqrt{3}}\, \mathrm{pu}`} />
+      <p>At 1.00 pu this gives 240.1777 V; at 1.05 pu it gives 252.1866 V. Hand value and OpenDSS value agree.</p>
+      <p class="src">Source: <code>results/stage2_toy_checks.csv</code> (transformer no-load rows)</p>
+    </div>
+
+    <div class="box formula">
+      <h3>Cable-limit hosting capacity (the Stage 4 load case)</h3>
+      <Math display label="Hosting capacity equals rated current times voltage plus local load, divided by number of houses" tex={String.raw`HC = \frac{I_{\text{rating}}\, V + P_{\text{local}}}{n_{\text{houses}}}`} />
+      <p>Worked example at 100% penetration: (195 A x 245 V + 12.8 kW local load) / 21 houses on that phase = 2.88 kW by hand, against 2.91 kW from OpenDSS. The 195 A rating is an assumption.</p>
+      <p class="src">Source: <code>VALIDATION.md</code> row 17; <code>checkpoints/CP-04-stage4-snapshot-hc.md</code></p>
+    </div>
+
+    <div class="box formula">
+      <h3>Bisection: how the search narrows</h3>
+      <Math display label="Number of halvings n needed to go from 1 kW to 0.01 kW" tex={String.raw`n \ge \log_2\frac{1\ \text{kW}}{0.01\ \text{kW}} = \log_2 100 \approx 6.64 \;\Rightarrow\; n = 7, \quad 2^{7} = 128 > 100`} />
+      <p>Power is raised in 1 kW steps until a limit breaks, then bisected to 0.01 kW. About 7 halvings are enough. The 7 and 128 are my own arithmetic on those two numbers.</p>
+      <p class="src">Source: <code>src/hc/hosting.py</code> (module docstring)</p>
+    </div>
+
+    <div class="box formula">
+      <h3>Voltage unbalance factor</h3>
+      <Math display label="Voltage unbalance factor equals negative sequence over positive sequence voltage times 100 percent" tex={String.raw`\mathrm{VUF} = \frac{|V_2|}{|V_1|} \times 100\,\%`} />
+      <p>In the code: VUF = |V2| / |V1| x 100, from the positive and negative sequence voltages at three-phase buses. A hand calculation gave 2.51 % for a known phasor set. The 2 % limit used later is an assumed European value, not an NZ limit.</p>
+      <p class="src">Source: <code>src/hc/feeder.py</code>, function <code>vuf_percent</code>; <code>VALIDATION.md</code> row 10</p>
+    </div>
+
+    <div class="box formula">
+      <h3>Energy balance</h3>
+      <Math display label="Load energy plus loss energy minus PV energy equals transformer energy" tex={String.raw`E_{\text{load}} + E_{\text{losses}} - E_{\text{PV}} = E_{\text{transformer}}`} />
+      <p>In words: load + losses - PV = transformer energy. This is bookkeeping: it catches a missed element, not a wrong model.</p>
+      <p class="src">Source: <code>VALIDATION.md</code> rows 24 to 26</p>
+    </div>
+  </section>
+
+  <section id="method" aria-labelledby="h-method">
+    <h2 id="h-method">Method in short</h2>
+    <ul>
+      <li>Network: IEEE European LV Test Feeder (50 Hz, 11 kV to 0.416 kV, 800 kVA, 907 buses, 55 customers). Its impedances and ratio are kept; voltage bases are set so 1 pu is 230 V. The source is 1.00 pu in the base case and is varied as an assumption.</li>
+      <li>Limits: 207 to 253 V at customers (NZ low-voltage limit since 13 Nov 2025), assumed cable ratings, the 800 kVA transformer.</li>
+      <li>Hosting capacity: kW per solar customer, on one phase, at stated penetrations, for a midday summer snapshot. It is similar in shape to Orion's published method, not identical. The year time series gives violation hours and curtailed energy.</li>
+      <li>Inverter settings: Australia A volt-var and volt-watt, from free summaries.</li>
+    </ul>
+  </section>
+
+  <section id="data" aria-labelledby="h-data">
+    <h2 id="h-data">Data sources and attribution</h2>
+    <p>The data are synthetic and NZ-parameterised. No feeder file or raw data are published on this site: only results and figures. The download script and <code>DATA.md</code> in the project files list the sources.</p>
+    <ul>
+      <li>Load and EV profiles: Steidl, Zabala Figueroa et al., "High-resolution residential energy load profiles under varying electrification scenarios for NZ and Germany using resLoadSIM", Zenodo v1, 8 May 2025, <a href="https://zenodo.org/records/15362256" rel="noopener noreferrer">https://zenodo.org/records/15362256</a>, licensed CC BY 4.0. Aggregated to 30 minutes and scaled; changes were made by the author.</li>
+      <li>Feeder layout (hero drawing): IEEE PES European LV Test Feeder, simplified redraw from the bus coordinates; no licence stated; not an IEEE figure.</li>
+      <li>Solar: modelled with PVGIS (licence not checked).</li>
+      <li>Cable ratings: from third-party datasheets, described in <code>research/R10-line-ratings.md</code>. The ratings file is not published.</li>
+      <li>Uptake forecast: EA solar data and Ministry of Transport EVs via Figure.NZ, with Stats NZ and MBIE. Licences for some of these are not checked, so only derived result figures are shown.</li>
+    </ul>
+    <h3>Policy sources</h3>
+    <SourceList items={[
+      { label: 'EA decision paper, 7 Apr 2026', url: 'https://www.ea.govt.nz/documents/9545/Decision_paper_-_Maximising_benefits_from_local_electricity_generation.pdf' },
+      { label: 'EA information sheet, Export limits', url: 'https://www.ea.govt.nz/documents/9799/Export_limits_-_information_sheet.pdf' },
+      { label: 'Orion Congestion Management Policy, applies from 1 Apr 2026 (issued 30 Mar 2026)', url: 'https://www.oriongroup.co.nz/assets/Connections/Orion-Congestion-Management-Policy-1-April-2026.pdf' },
+    ]} />
+  </section>
+</Base>

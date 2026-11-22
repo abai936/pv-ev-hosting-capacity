@@ -1,0 +1,4 @@
+scenario,pv_count,solve_ms_per_step,nonconverged_steps,v_max_V,minutes_above_253V,pv_energy_kWh,pv_available_kWh,curtailed_kWh_volt_watt_plus_var_priority_kVA_limit,maxcontroliter,irradiance_note
+no_pv,0,2.539,0,243.68,0,0.0,0.0,,100,SYNTHETIC clear-sky half-sine 06:00-20:00; synthetic NZ-parameterised feeder
+pv_no_control,55,2.776,0,263.75,481,2451.0,2451.0,,100,SYNTHETIC clear-sky half-sine 06:00-20:00; synthetic NZ-parameterised feeder
+pv_vv_vw,55,4.207,0,255.75,421,2385.6,2451.0,65.4,100,SYNTHETIC clear-sky half-sine 06:00-20:00; synthetic NZ-parameterised feeder

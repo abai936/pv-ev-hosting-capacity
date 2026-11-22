@@ -1,0 +1,76 @@
+{
+  "source_file": "results/stage6_snapshot_hc.csv",
+  "label": "simulated",
+  "selection": "load_case L2, source_pu 1.0, model neutral_return",
+  "x_unit": "% of houses with solar",
+  "y_unit": "kW per solar house",
+  "orion_cap_kw": 10.0,
+  "P1": [
+    {
+      "penetration_pct": 30,
+      "hc_kw": 9.5,
+      "binding_limit": "line"
+    },
+    {
+      "penetration_pct": 60,
+      "hc_kw": 5.03,
+      "binding_limit": "line"
+    },
+    {
+      "penetration_pct": 100,
+      "hc_kw": 2.72,
+      "binding_limit": "line"
+    }
+  ],
+  "P2": [
+    {
+      "penetration_pct": 30,
+      "hc_kw": 5.38,
+      "binding_limit": "voltage-high"
+    },
+    {
+      "penetration_pct": 60,
+      "hc_kw": 4.04,
+      "binding_limit": "voltage-high"
+    },
+    {
+      "penetration_pct": 100,
+      "hc_kw": 2.72,
+      "binding_limit": "line"
+    }
+  ],
+  "P3": [
+    {
+      "penetration_pct": 30,
+      "n_orders": 50,
+      "p5_kw": 4.5225,
+      "p50_kw": 6.05,
+      "p95_kw": 8.385,
+      "binding_counts": {
+        "voltage-high": 45,
+        "line": 5
+      }
+    },
+    {
+      "penetration_pct": 60,
+      "n_orders": 50,
+      "p5_kw": 3.0715,
+      "p50_kw": 3.87,
+      "p95_kw": 4.7455,
+      "binding_counts": {
+        "voltage-high": 36,
+        "line": 14
+      }
+    },
+    {
+      "penetration_pct": 100,
+      "n_orders": 50,
+      "p5_kw": 2.72,
+      "p50_kw": 2.72,
+      "p95_kw": 2.72,
+      "binding_counts": {
+        "line": 50
+      }
+    }
+  ]
+}

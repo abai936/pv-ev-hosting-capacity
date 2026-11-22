@@ -1,0 +1,3 @@
+tap,EV_HC_count,binding_limit,binding_element,min_cust_V_no_EV,min_cust_V_at_HC,min_cust_V_at_30_EVs,low_voltage_violations_no_EV,low_voltage_violations_30_EVs,label
+1.0,6,line,line1,233.25,227.64,213.53,0,0,"simulated; LE = winter weekday evening median, 7.4 kW EV (assumed); ratings assumed"
+0.975,6,line,line1,227.08,221.32,206.74,0,1,"simulated; LE = winter weekday evening median, 7.4 kW EV (assumed); ratings assumed"

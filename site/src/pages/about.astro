@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import AuthorshipBox from '../components/AuthorshipBox.astro';
+---
+<Base title="About | Simulated, v0.9">
+  <section id="about" aria-labelledby="h-about">
+    <p class="kicker">About</p>
+    <h1 id="h-about">About this project</h1>
+    <p>I am Aniket Bailwal, an Electrical and Electronic Engineering student at the University of Auckland. This is one simulation project, at version 0.9, about how much rooftop solar and how many EV chargers a 55-house NZ-style low-voltage street can take.</p>
+  </section>
+
+  <section id="authorship" aria-labelledby="h-auth">
+    <h2 id="h-auth">How this was built</h2>
+    <AuthorshipBox>
+      <p>What I decided: the question, the scope and the assumptions. What I reviewed: the results and the checks listed with their limits on the Method and checks page. The tests and hand checks were drafted with AI coding assistants and run by them.</p>
+      <p>I am working through the hand checks myself.</p>
+    </AuthorshipBox>
+    <p>An independent review step checked the results as well.</p>
+  </section>
+
+  <section id="next" aria-labelledby="h-next">
+    <h2 id="h-next">What I would do next</h2>
+    <p>My judgement, not a result:</p>
+    <ul>
+      <li>Get a real rating source from an NZ distribution engineer.</li>
+      <li>A 1-minute worst-week re-run to measure what 30-minute steps hide.</li>
+      <li>A rating sweep around the assumed value, to show how much the results depend on it.</li>
+      <li>A second feeder.</li>
+    </ul>
+  </section>
+</Base>

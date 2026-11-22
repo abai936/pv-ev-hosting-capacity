@@ -1,0 +1,13 @@
+---
+interface Item { label: string; url: string; note?: string; }
+interface Props { items: Item[]; }
+const { items } = Astro.props;
+---
+<ul>
+  {items.map((i) => (
+    <li>
+      <a href={i.url} rel="noopener noreferrer">{i.label}</a>
+      {i.note && <> ({i.note})</>}. Read 19 Nov 2026.
+    </li>
+  ))}
+</ul>

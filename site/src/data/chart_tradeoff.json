@@ -1,0 +1,68 @@
+{
+  "source_files": [
+    "results/stage8_year.csv",
+    "results/stage8_hc.csv"
+  ],
+  "label": "simulated",
+  "year_case": "Y3: 8 kWp on 60% of houses, P1, tap 1.000, inverter kVA = kW",
+  "year": [
+    {
+      "mode": "M0",
+      "name": "without control",
+      "case": "Y3_M0_tap1.000",
+      "cust_hours_above_253v": 1330.0,
+      "hours_line_above_rating": 326.5
+    },
+    {
+      "mode": "M3",
+      "name": "with Australia A control",
+      "case": "Y3_M3_tap1.000",
+      "cust_hours_above_253v": 38.5,
+      "hours_line_above_rating": 582.5
+    }
+  ],
+  "hc": [
+    {
+      "mode": "M0",
+      "name": "without control",
+      "penetration_pct": 30,
+      "hc_kw": 9.5,
+      "binding_limit": "line"
+    },
+    {
+      "mode": "M0",
+      "name": "without control",
+      "penetration_pct": 60,
+      "hc_kw": 5.031,
+      "binding_limit": "line"
+    },
+    {
+      "mode": "M0",
+      "name": "without control",
+      "penetration_pct": 100,
+      "hc_kw": 2.719,
+      "binding_limit": "line"
+    },
+    {
+      "mode": "M3",
+      "name": "with Australia A control",
+      "penetration_pct": 30,
+      "hc_kw": 9.32,
+      "binding_limit": "line"
+    },
+    {
+      "mode": "M3",
+      "name": "with Australia A control",
+      "penetration_pct": 60,
+      "hc_kw": 4.922,
+      "binding_limit": "line"
+    },
+    {
+      "mode": "M3",
+      "name": "with Australia A control",
+      "penetration_pct": 100,
+      "hc_kw": 2.656,
+      "binding_limit": "line"
+    }
+  ]
+}

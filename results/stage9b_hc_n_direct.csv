@@ -1,0 +1,3 @@
+n_pv,n_customers,HC_kW,binding_limit,binding_element,source_pu,load_case,placement,rating_status,label
+3,55,20.0,none (>= 20 kW),,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed
+4,55,18.51,voltage-high,load30@563.1,1.0,L2,P1,assumed,simulated; IEEE feeder; NZ-parameterised synthetic load; ratings assumed

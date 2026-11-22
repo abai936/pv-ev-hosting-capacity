@@ -1,0 +1,27 @@
+---
+// Web copy (WebP, max 1200 px) is shown; the original PNG is behind "view full size".
+import figures from '../data/figures.json';
+interface Props { id: keyof typeof figures; alt: string; caption: string; eager?: boolean; }
+const { id, alt, caption, eager = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const m = (figures as Record<string, { width: number; height: number }>)[id];
+const [cp, ...rest] = String(id).split('_');
+const no = cp.replace(/^cp0?(\d+)(\w?)$/i, (_m, n, x) => `CP-${n.padStart(2, '0')}${x}`);
+const words = rest.map((w) => (['hc', 'ev', 'nz'].includes(w) ? w.toUpperCase() : w)).join(' ');
+const title = words.charAt(0).toUpperCase() + words.slice(1);
+---
+<figure class="sheet">
+  <div class="sheet-strip"><span class="sheet-no">Figure {no}</span><span class="sheet-title">{title} (simulated)</span></div>
+  <img
+    src={`${base}/figures/web/${id}.webp`}
+    alt={alt}
+    width={m.width}
+    height={m.height}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+  <figcaption>
+    {caption}
+    {' '}<a class="fig-link" href={`${base}/figures/${id}.png`}>View full size (PNG)<span class="sr-only"> of {id}</span></a>
+  </figcaption>
+</figure>

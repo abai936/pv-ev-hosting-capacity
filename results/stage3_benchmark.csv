@@ -1,0 +1,13 @@
+case,minute,reference,max_abs_err_V,mean_abs_err_V
+a_default_loads,1,published_OpenDSS,0.0245,0.0166
+a_default_loads,1,published_GridLAB-D,0.0245,0.0166
+a_default_loads,566,published_OpenDSS,0.4001,0.1338
+a_default_loads,566,published_GridLAB-D,0.4,0.1333
+a_default_loads,1440,published_OpenDSS,0.0907,0.0522
+a_default_loads,1440,published_GridLAB-D,0.0905,0.0522
+b_constant_P,1,published_OpenDSS,0.0005,0.0003
+b_constant_P,1,published_GridLAB-D,0.0,0.0
+b_constant_P,566,published_OpenDSS,0.0028,0.001
+b_constant_P,566,published_GridLAB-D,0.0012,0.0005
+b_constant_P,1440,published_OpenDSS,0.0005,0.0003
+b_constant_P,1440,published_GridLAB-D,0.0,0.0

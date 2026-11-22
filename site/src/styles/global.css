@@ -1,0 +1,399 @@
+/* Design system, direction A "single-line drawing", round 4 palette (22 Nov 2026): all light. White page,
+   cool band #F2F5F8 for alternating sections and the footer, ink text, no dark panels. Contrast of every pair is in site/CHECKS.md (node WCAG script).
+   Meaning of colour: blue = voltage / signal, amber = the assumed cable-rating limit.
+   Phase red/white/blue is for data only and is not used here. */
+:root {
+  /* colour: light surfaces */
+  --page: #FFFFFF;
+  --surface: #FFFFFF;
+  --band: #F2F5F8;       /* alternating sections, strips, table heads */
+  --ink: #0B1620;        /* headlines, text, weighted rules (never a background) */
+  --text: #1B2733;       /* body text */
+  --ink-soft: #3B4A58;   /* secondary text: 9.11 on white, 8.32 on band */
+  --grid: #CBD5DF;       /* all hairline rules */
+  --signal: #0F52BA;     /* links and voltage meaning: 7.15 on white, 6.54 on band */
+  --limit: #C27400;      /* amber for rules and strokes on light: 3.63 on white, 3.31 on band */
+  --limit-fill: #E8920A; /* amber fill for chart markers, always with an ink outline */
+  --limit-text: #9A5B00; /* amber TEXT on light: 5.43 on white, 4.96 on band */
+
+  --signal-deep: #0B3F91;  /* primary button hover: white text 9.84 */
+  --sheet-grid: #E6ECF2;   /* faint engineering-sheet grid behind the hero feeder (decorative) */
+  --feeder-line: #2B3A47;  /* hero feeder branches: 11.67 on white */
+
+  /* type */
+  --font-head: 'Instrument Sans', system-ui, sans-serif;
+  --font-body: 'Source Serif 4 Variable', Georgia, serif;
+  --fs-body: 1.125rem;
+  --fs-small: 0.9rem;
+  --fs-h3: 1.25rem;
+  --fs-h2: clamp(1.6rem, 1rem + 2.2vw, 2.3rem);
+  --fs-h1: clamp(1.9rem, 5vw, 2.6rem);
+  --fs-hero: clamp(2.2rem, 1.1rem + 4.4vw, 3.75rem);
+
+  /* spacing (4 px base) */
+  --s-1: 0.25rem; --s-2: 0.5rem; --s-3: 0.75rem; --s-4: 1rem;
+  --s-5: 1.5rem; --s-6: 2.5rem; --s-7: 4rem;
+
+  /* only two radii, and no shadows: structure comes from 1 px rules */
+  --r-1: 2px;
+  --r-2: 6px;
+  --rule: 1px solid var(--grid);
+
+  /* Motion tokens: the ONE place for easing and timing. motion.ts reads these at run time. */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);    /* entrances, reveals, draw-in */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1); /* chart markers only: small overshoot */
+  --dur-hover: 180ms;  /* hover / focus lifts */
+  --dur-step: 300ms;   /* scroll-story step changes */
+  --dur-short: 400ms;  /* labels, fades */
+  --dur-base: 550ms;   /* text blocks */
+  --dur-long: 700ms;   /* headline mask, line draw */
+  --rise: 14px;        /* text-block translate */
+  --lift: -2px;        /* card hover lift */
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { font-size: 100%; -webkit-text-size-adjust: 100%; scroll-padding-top: var(--s-6); }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-body); /* 18 px, above the 16 px minimum */
+  line-height: 1.65;
+  overflow-wrap: break-word;
+  overflow-x: clip; /* full-bleed panels use a clipped box-shadow; nothing may scroll sideways */
+}
+h1, h2, h3, nav, .kicker, .banner, figcaption, .card-label {
+  font-family: var(--font-head);
+}
+h1, h2, h3 { color: var(--ink); }
+h1 { font-size: var(--fs-h1); line-height: 1.12; letter-spacing: -0.015em; font-weight: 700; margin: 0 0 var(--s-4); }
+h2 { font-size: var(--fs-h2); line-height: 1.15; letter-spacing: -0.02em; font-weight: 700; margin: 0 0 var(--s-3); }
+h3 { font-size: var(--fs-h3); line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; margin: var(--s-5) 0 var(--s-2); }
+h1, h2 { text-wrap: balance; }
+p, li { text-wrap: pretty; }
+a { color: var(--signal); text-underline-offset: 0.18em; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, var(--signal) 55%, transparent); }
+a:hover { text-decoration-thickness: 2px; text-decoration-color: var(--signal); }
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: var(--r-1);
+}
+.skip-link {
+  position: absolute; left: var(--s-2); top: -4rem; z-index: 40;
+  background: var(--surface); color: var(--ink); border: 2px solid var(--signal); padding: var(--s-3) var(--s-4);
+  border-radius: var(--r-2); min-height: 44px;
+}
+.skip-link:focus { top: var(--s-2); }
+
+/* The banner stays at the top of every page, never hidden or collapsed.
+   White strip, 3 px blue rule at the very top of the page, 1 px hairline under it,
+   ink 16 px semibold text (18.26:1), solid blue diamond marker (aria-hidden). */
+.banner {
+  background: color-mix(in srgb, var(--ink) 12%, #FFFFFF); color: var(--ink);
+  border-top: 3px solid var(--signal); border-bottom: 1px solid color-mix(in srgb, var(--ink) 28%, #FFFFFF);
+  display: flex; align-items: flex-start; justify-content: center; gap: var(--s-3);
+  padding: 11px var(--s-4);
+}
+.banner-text {
+  margin: 0; min-width: 0; max-width: 60rem;
+  font-family: var(--font-head); font-size: 16px; line-height: 1.45; font-weight: 600; letter-spacing: 0.01em;
+  white-space: normal; overflow: visible; text-wrap: balance;
+}
+.banner-mark { flex: none; width: 0.6rem; height: 0.6rem; margin-top: 0.45rem; background: var(--signal); transform: rotate(45deg); }
+@media (max-width: 40rem) { .banner-text { font-size: 15px; } .banner { padding: 10px var(--s-3); } }
+
+/* Header: white, one hairline rule, ink links, active link with a blue underline. */
+.site-header {
+  position: relative; background: var(--page);
+  border-bottom: var(--rule);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-5);
+  padding: var(--s-1) var(--s-4); margin: 0 auto;
+}
+.site-header > * { max-width: 72rem; }
+.site-title { font-family: var(--font-head); font-weight: 700; margin-right: auto; color: var(--ink); letter-spacing: 0.01em; font-size: 1.05rem; }
+.site-title::before { content: ''; display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: var(--s-2); background: var(--ink); }
+.site-header nav { display: flex; flex-wrap: wrap; gap: 0 var(--s-1); }
+.site-header nav a {
+  display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; padding: 0 var(--s-3);
+  color: var(--ink); text-decoration: none; font-weight: 500; font-size: 1rem;
+}
+.site-header nav a[aria-current='page'] { box-shadow: inset 0 -3px 0 var(--signal); font-weight: 700; }
+.site-header nav a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: var(--ink); }
+@media (min-width: 40rem) {
+  .site-header { position: sticky; top: 0; z-index: 30; }
+}
+/* Reading progress rule: created by motion.ts only when motion is allowed. Transform only. */
+.nav-progress {
+  position: fixed; left: 0; right: 0; top: 0; height: 2px; z-index: 35;
+  background: var(--signal); transform: scaleX(0); transform-origin: 0 50%;
+  pointer-events: none;
+}
+@media (min-width: 40rem) {
+  .nav-progress { position: absolute; top: auto; bottom: -1px; }
+}
+
+main { padding: 0 var(--s-4); max-width: 72rem; margin: 0 auto; }
+section { padding: var(--s-7) 0; }
+section > *, .prose > * { max-width: 70ch; } /* 60 to 75 characters per line */
+/* Rhythm: every other section sits on a full-bleed cool band. The band is a clipped box-shadow,
+   so the content column and the grid layout do not change and nothing overflows sideways. */
+main > section:nth-of-type(even) {
+  background: var(--band);
+  box-shadow: 0 0 0 100vmax var(--band);
+  clip-path: inset(0 -100vmax);
+}
+/* Section label: sentence case, quiet, no tracking. It carries real information
+   (for example "Forecast, not prediction"), so it stays, but it is not a loud eyebrow. */
+.kicker { font-size: var(--fs-small); color: var(--ink-soft); font-weight: 600; margin: 0 0 var(--s-2); }
+#uptake .kicker { color: var(--limit-text); font-weight: 700; }
+p, li { margin: 0 0 var(--s-3); }
+ul, ol { padding-left: 1.25rem; }
+.small { font-size: var(--fs-small); }
+
+/* ---- Home hero: white, text left, feeder right; feeder under the text on phones ---- */
+#hero { padding-top: 0; }
+section > .hero-grid { max-width: none; display: grid; gap: var(--s-6); align-items: center; margin-bottom: var(--s-5); }
+.hero-grid > * { min-width: 0; }
+#hero > .hero-grid { padding: var(--s-6) 0 var(--s-5); }
+@media (min-width: 56rem) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: var(--s-6); }
+  #hero > .hero-grid { min-height: min(88vh, 760px); padding: var(--s-7) 0 var(--s-6); }
+}
+#hero .hero-text h1 { color: var(--ink); font-size: var(--fs-hero); line-height: 1.04; letter-spacing: -0.03em; margin-bottom: var(--s-5); }
+#hero .hero-text .kicker { letter-spacing: 0.01em; }
+#hero .hero-text ol { font-size: 1.15rem; padding-left: 1.4rem; max-width: 36rem; }
+#hero .hero-text ol li::marker { color: var(--ink-soft); font-family: var(--font-head); font-weight: 700; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-5); }
+#hero .hero-actions .btn-primary { background: var(--signal); color: #FFFFFF; border-color: var(--signal); }
+#hero .hero-actions .btn-primary:hover { background: var(--signal-deep); border-color: var(--signal-deep); }
+#hero .hero-actions .btn-ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+#hero .hero-actions .btn-ghost:hover { background: var(--band); }
+/* Key result under the buttons: the same ResultCard (number, unit, caveat and source together), compact. */
+.hero-key { margin-top: var(--s-5); max-width: 30rem; }
+.hero-key .kicker { margin-bottom: var(--s-2); }
+.hero-key .cards { margin: 0; grid-template-columns: 1fr; }
+.hero-key .card-value { font-size: clamp(1.9rem, 1.4rem + 1.2vw, 2.3rem); }
+/* Jump-to row under the hero: plain anchor links, 44 px tall. */
+#hero > .jump { max-width: none; }
+.jump { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--s-1); padding: var(--s-1) 0; margin: 0 0 var(--s-5); border-top: var(--rule); border-bottom: var(--rule); font-family: var(--font-head); font-size: 1rem; }
+.jump-label { font-weight: 700; color: var(--ink-soft); margin: 0 var(--s-2) 0 0; font-size: var(--fs-small); }
+.jump a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); font-weight: 600; text-decoration: none; color: var(--signal); }
+.jump a:hover { text-decoration: underline; }
+
+/* Hero feeder on white: a faint engineering-sheet grid behind the drawing only, fading at the edges
+   (mask on a pseudo-element, so the drawing itself is not faded). Ink lines, blue dots, thick amber trunk,
+   and a faint low-alpha amber glow on the top (trunk) layer only. --limit stays #C27400, so motion.ts's
+   pulse (var(--limit)) is the same amber. */
+#hero .feeder-hero { position: relative; padding: var(--s-4) 0; isolation: isolate; }
+#hero .feeder-hero::before {
+  content: ''; position: absolute; inset: -1rem; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(var(--sheet-grid) 1px, transparent 1px), linear-gradient(90deg, var(--sheet-grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 55%, transparent 100%);
+}
+#hero .feeder-art path { stroke: var(--feeder-line); }
+#hero .feeder-art path.trunk { stroke: var(--limit); stroke-width: 4.5px; }
+#hero .feeder-art .loads circle { fill: var(--signal); }
+#hero .feeder-art .tx { fill: var(--ink); }
+#hero .feeder-art svg.layer-top { filter: drop-shadow(0 0 3px rgba(194, 116, 0, 0.22)); }
+.feeder-legend { list-style: none; padding: 0; margin: var(--s-3) auto 0; max-width: 40rem; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-5); font-family: var(--font-head); font-size: var(--fs-small); color: var(--ink-soft); }
+.feeder-legend li { margin: 0; display: inline-flex; align-items: center; gap: var(--s-2); }
+.feeder-legend .sw-trunk { width: 1.4rem; height: 4px; background: var(--limit); flex: none; }
+.feeder-legend .sw-dot { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--signal); flex: none; }
+
+/* Result cards: number, unit, caveat and source in one block. White, hairline frame, 3 px top rule in ink.
+   The top rule changes colour only where it means something: amber = limit is the assumed cable rating,
+   blue = voltage-only. */
+section > .cards { max-width: none; }
+.cards { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); margin: var(--s-5) 0; list-style: none; padding: 0; }
+.card {
+  border: var(--rule); border-top: 3px solid var(--ink); border-radius: var(--r-1);
+  background: var(--surface); padding: var(--s-4); margin: 0;
+  min-width: 0; overflow-wrap: anywhere; /* long file names wrap inside the card */
+  display: flex; flex-direction: column;
+}
+.card.volt { border-top-color: var(--signal); }
+.card.limit { border-top-color: var(--limit); }
+.card-label { font-size: var(--fs-small); font-weight: 600; margin: 0 0 var(--s-2); color: var(--ink-soft); line-height: 1.4; }
+.card-value { font-family: var(--font-head); font-size: clamp(2rem, 1.4rem + 1.8vw, 2.6rem); font-weight: 700; letter-spacing: -0.02em; margin: 0; line-height: 1.1; color: var(--ink); overflow-wrap: normal; }
+.card-value .unit { font-size: 1rem; font-weight: 600; letter-spacing: 0; color: var(--ink-soft); }
+.card-caveat { font-size: 1rem; margin: var(--s-3) 0 var(--s-2); }
+.card-source { font-size: var(--fs-small); margin: auto 0 0; padding-top: var(--s-2); border-top: var(--rule); color: var(--ink-soft); }
+code { font-family: ui-monospace, Consolas, monospace; font-size: 0.9em; overflow-wrap: anywhere; }
+
+section > figure { max-width: 60rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+figure { margin: var(--s-5) 0; }
+figure img { max-width: 100%; height: auto; display: block; border: var(--rule); background: var(--surface); }
+figcaption { font-size: 1rem; margin-top: var(--s-2); line-height: 1.45; color: var(--ink-soft); }
+figure figcaption { max-width: 70ch; border-top: var(--rule); padding-top: var(--s-2); }
+.fig-link { display: inline-block; min-height: 44px; padding: var(--s-2) 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Boxes: hairline frame with a 3 px ink top rule; no colour, because colour is reserved for limit meaning. */
+.box { border: var(--rule); border-top: 3px solid var(--ink); border-radius: var(--r-1); background: var(--surface); padding: var(--s-4) var(--s-5); margin: var(--s-5) 0; }
+.box h3 { margin-top: 0; }
+.box > :last-child { margin-bottom: 0; }
+.box-title { font-size: var(--fs-h3); margin: 0 0 var(--s-2); }
+
+section > table { max-width: 60rem; }
+table { border-collapse: collapse; width: 100%; font-size: 1rem; margin: var(--s-4) 0; overflow-wrap: anywhere; background: var(--surface); }
+th, td { border: var(--rule); padding: var(--s-2) 0.6rem; text-align: left; vertical-align: top; }
+th { background: var(--band); font-family: var(--font-head); color: var(--ink); }
+@media (max-width: 40rem) {
+  /* Tables turn into stacked rows on a phone, so nothing scrolls sideways */
+  table, thead, tbody, tr, th, td { display: block; }
+  thead { position: absolute; left: -9999px; }
+  tr { border: var(--rule); margin-bottom: var(--s-3); background: var(--surface); }
+  td { border: 0; border-bottom: var(--rule); }
+  td::before { content: attr(data-label) ': '; font-weight: 700; font-family: var(--font-head); }
+}
+
+/* Footer: light cool band with a hairline top rule, ink text, blue links. */
+.site-footer { background: var(--band); color: var(--text); border-top: var(--rule); padding: var(--s-6) var(--s-4) var(--s-7); font-size: 1rem; }
+.site-footer > div { max-width: 72rem; margin: 0 auto; }
+.site-footer h2 { font-size: 1rem; margin: 0 0 var(--s-2); }
+.site-footer p, .site-footer ul { max-width: 62ch; }
+.site-footer ul { padding-left: 0; list-style: none; }
+.site-footer li { margin: 0; }
+.site-footer li a { display: inline-block; padding: 0.55rem 0; } /* 44 px tap row in the link list */
+@media (min-width: 56rem) { .site-footer > div { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--s-6); } .site-footer > div > * { min-width: 0; } }
+
+/* Disclosure controls (Data table, Static image) and buttons: a bordered bar, 44 px tall for touch. */
+.png-fallback, .chart-table { margin: var(--s-4) 0; }
+details > summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; gap: var(--s-3);
+  min-height: 44px; padding: var(--s-2) var(--s-4);
+  border: var(--rule); border-radius: var(--r-1); background: var(--surface);
+  font-family: var(--font-head); font-weight: 600; font-size: 1rem; color: var(--ink);
+}
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before {
+  content: '+'; flex: none; width: 1.5rem; height: 1.5rem; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--ink); border-radius: var(--r-1); font-weight: 700; line-height: 1;
+}
+details[open] > summary::before { content: '\2212'; } /* minus sign */
+details[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+details > :not(summary) { margin-top: var(--s-3); }
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s-5); border: 1px solid var(--grid); border-radius: var(--r-1); font-family: var(--font-head); font-weight: 600; font-size: 1rem; text-decoration: none; color: var(--ink); background: var(--surface); }
+details > summary:hover, .btn:hover { border-color: var(--ink); background: var(--band); }
+
+/* Drawing-sheet layout on wide screens: the section label and headline sit in a left column
+   (like a title block), the claim text sits beside it, and cards, charts, figures and tables use the full width. */
+@media (min-width: 64rem) {
+  main { padding-inline: var(--s-6); }
+  section:not(#hero) { display: grid; grid-template-columns: minmax(15rem, 21rem) minmax(0, 1fr); column-gap: var(--s-6); align-items: start; }
+  section:not(#hero) > * { grid-column: 2; max-width: 70ch; }
+  section:not(#hero) > .kicker, section:not(#hero) > h2 { grid-column: 1; max-width: none; }
+  section:not(#hero) > .kicker { padding-top: var(--s-2); border-top: 3px solid var(--ink); }
+  section:not(#hero) > .cards,
+  section:not(#hero) > figure,
+  section:not(#hero) > details,
+  section:not(#hero) > .box,
+  section:not(#hero) > table { grid-column: 1 / -1; max-width: none; }
+  section:not(#hero) > figure.chart { max-width: none; }
+}
+.chart-table { overflow-x: auto; max-width: 100%; } /* a wide table scrolls inside its own box */
+
+@media print {
+  /* The banner must survive a black-and-white print: no background colour needed. */
+  .banner { background: none !important; color: #000 !important; border: 2px solid #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .banner-mark { background: #000; }
+  .skip-link, .nav-progress, .site-header nav { display: none; }
+  .site-header { position: static; }
+  main > section:nth-of-type(even), .site-footer { background: none; box-shadow: none; clip-path: none; }
+  section { break-inside: auto; }
+  figure, .card { break-inside: avoid; }
+  a { color: #000; }
+}
+
+/* ---- Motion layer (driven by src/scripts/motion.ts; timings from the tokens in :root) ----
+   Content is visible by default. Hidden start states exist only while JS is running the motion:
+   html.js-motion is set by an inline script only when reduced motion is NOT requested, and .m-pre is
+   added by motion.ts to elements that are below the fold and removed the frame their entrance starts. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-stopped { overflow: clip; }
+html.js-motion:not(.motion-ready) :is(#hero .hero-text, .feeder-stage) { opacity: 0; }
+.m-pre { opacity: 0; }
+
+/* Sticky header: a darker rule fades in once the page is scrolled (opacity only, no shadow). */
+.site-header::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  background: var(--ink-soft); opacity: 0; pointer-events: none;
+  transition: opacity var(--dur-hover) var(--ease-out);
+}
+.site-header.is-scrolled::after { opacity: 1; }
+
+/* Card hover / focus lift: transform only, so nothing around it moves. */
+.card { transition: transform var(--dur-hover) var(--ease-out), opacity var(--dur-step) var(--ease-out); }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card:hover { transform: translateY(var(--lift)); border-left-color: var(--ink-soft); border-right-color: var(--ink-soft); border-bottom-color: var(--ink-soft); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .card:focus-within { transform: translateY(var(--lift)); }
+}
+
+/* Hero 3D tilt (fine pointer only, class set by motion.ts). The top layer (amber trunk + load dots)
+   sits 12px in front; scale(0.988) = (1000 - 12) / 1000 cancels the perspective enlargement,
+   so at rest the two layers line up exactly as in the flat drawing. */
+.feeder-hero.tilt-on .feeder-art { perspective: 1000px; }
+.feeder-hero.tilt-on .feeder-stage { transform-style: preserve-3d; will-change: transform; }
+.feeder-hero.tilt-on svg.layer-top { transform: translateZ(12px) scale(0.988); }
+
+/* Scroll story "How the limit binds" (desktop only, built by motion.ts around the existing cards). */
+section:not(#hero) > .story, .story { grid-column: 1 / -1; max-width: none; display: grid; grid-template-columns: 14rem minmax(0, 1fr); gap: var(--s-6); align-items: start; margin: var(--s-4) 0; }
+.story > .cards { margin: 0; max-width: none; }
+.story-aside { position: sticky; top: 4.5rem; font-family: var(--font-head); font-size: var(--fs-small); }
+.story .story-aside .feeder-art { max-width: 14rem; margin: 0 0 var(--s-3); }
+.story-title { font-weight: 700; margin: 0 0 var(--s-2); color: var(--ink); }
+.story-steps { list-style: none; padding: 0; margin: 0 0 var(--s-3); border-left: var(--rule); }
+.story-steps li { margin: 0; padding: var(--s-1) var(--s-3); opacity: 0.5; position: relative; transition: opacity var(--dur-step) var(--ease-out); }
+.story-steps li::before { content: ''; position: absolute; left: -1px; top: 0; bottom: 0; width: 3px; background: var(--limit); transform: scaleY(0); transform-origin: 50% 0; transition: transform var(--dur-step) var(--ease-out); }
+.story-steps li.is-on { opacity: 1; font-weight: 600; }
+.story-steps li.is-on::before { transform: scaleY(1); }
+.story-limit { margin: 0; color: var(--limit-text); font-weight: 600; min-height: 3em; }
+.story.is-live .card { opacity: 0.42; }
+.story.is-live .card.is-on, .story.is-live .card.is-also { opacity: 1; }
+.story.is-live .card.is-on { outline: 2px solid var(--limit); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Figure frame: crisp hairline frame, 3 px ink top rule, a thin sheet title strip above the image. */
+figure.sheet { border: var(--rule); border-top: 3px solid var(--ink); background: var(--surface); margin: var(--s-5) 0; }
+figure.sheet img { border: 0; border-bottom: var(--rule); }
+.sheet-strip { display: flex; gap: var(--s-3); align-items: baseline; padding: var(--s-2) var(--s-3); background: var(--surface); border-bottom: var(--rule); font-family: var(--font-head); font-size: var(--fs-small); }
+.sheet-no { font-weight: 700; white-space: nowrap; color: var(--ink); }
+.sheet-title { color: var(--ink-soft); }
+figure.sheet figcaption { margin: 0; padding: var(--s-2) var(--s-3) var(--s-2); border-top: 0; max-width: none; }
+
+/* Maths: white block, ink left rule (blue and amber are kept for meaning). */
+.math-display { margin: var(--s-4) 0; padding: var(--s-3) var(--s-4); background: var(--surface); border: var(--rule); border-left: 3px solid var(--ink); overflow-x: auto; max-width: 100%; color: var(--ink); }
+.math-display .katex-display { margin: 0; }
+.katex { font-size: 1.1em; }
+.math-inline .katex { font-size: 1.05em; }
+
+/* Method page: checks ladder, status chips, maths block */
+.ladder { list-style: none; padding: 0; margin: var(--s-4) 0; display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); counter-reset: rung; }
+section > .ladder { max-width: none; }
+.rung { counter-increment: rung; border: var(--rule); border-top: 3px solid var(--ink); border-radius: var(--r-1); background: var(--surface); margin: 0; padding: 0; min-width: 0; overflow-wrap: anywhere; display: flex; flex-direction: column; }
+.rung-head { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; padding: var(--s-2) var(--s-4); background: var(--surface); border-bottom: var(--rule); font-family: var(--font-head); font-size: var(--fs-small); font-weight: 700; }
+.rung-head::before { content: 'Rung ' counter(rung); color: var(--ink-soft); margin-right: auto; }
+.status { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 700; color: var(--ink); padding: 0.15rem 0.55rem; border: var(--rule); border-radius: var(--r-1); background: var(--band); }
+.status::before { content: ''; width: 0.7rem; height: 0.7rem; flex: none; border: 2px solid var(--ink); }
+.status.ind::before { background: var(--ink); }                       /* filled square */
+.status.hand::before { border-radius: 50%; background: linear-gradient(90deg, var(--ink) 50%, transparent 50%); } /* half circle */
+.status.none::before { border-style: dashed; }                        /* empty dashed square */
+.rung-body { padding: var(--s-3) var(--s-4); }
+.rung-body h3 { margin: 0 0 var(--s-2); font-size: 1.05rem; }
+.rung-body dl { margin: 0; font-size: 1rem; }
+.rung-body dt { font-family: var(--font-head); font-weight: 600; font-size: var(--fs-small); color: var(--ink-soft); margin-top: var(--s-2); }
+.rung-body dd { margin: 0; line-height: 1.5; }
+.rung-body dd.no { border-left: 3px solid var(--ink-soft); padding-left: var(--s-2); } /* not amber: amber means the cable limit */
+.maths-note { font-size: var(--fs-small); color: var(--ink-soft); }
+.formula { margin: var(--s-5) 0; max-width: none; }
+.formula h3 { margin-top: 0; }
+.formula .src { font-size: var(--fs-small); color: var(--ink-soft); margin: 0; }

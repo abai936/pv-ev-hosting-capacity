@@ -1,0 +1,11 @@
+linecode,R1_ohm_per_km,matched_size_mm2,conductor,match_error_pct,rating_A,rating_condition,source_id,confidence
+2c_.007,3.97,16,Al,107.9,54,assumed: in air touching (nearest-R size; unmatched),A,low
+2c_.0225,1.257,25,Al,4.8,73,assumed: in air touching,A,medium
+2c_16,1.15,16,Cu,0.0,88,assumed: unenclosed spaced (air),B,high
+35_SAC_XSC,0.868,35,Al,0.0,133,assumed: in ground,A,high
+4c_.06,0.469,70,Al,5.9,195,assumed: in ground,A,medium
+4c_.1,0.274,70,Cu,2.2,250,assumed: buried direct,B,medium
+4c_.35,0.089,185,Cu,10.2,435,assumed: buried direct,B,low
+4c_185,0.166,185,Al,1.2,340,assumed: in ground,A,high
+4c_70,0.446,70,Al,0.7,195,assumed: in ground,A,high
+4c_95_SAC_XC,0.322,95,Al,0.6,234,assumed: in ground,A,high

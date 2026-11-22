@@ -1,0 +1,58 @@
+---
+import '@fontsource/instrument-sans/400.css';
+import '@fontsource/instrument-sans/500.css';
+import '@fontsource/instrument-sans/600.css';
+import '@fontsource/instrument-sans/700.css';
+import '@fontsource-variable/source-serif-4';
+import 'katex/dist/katex.min.css';
+import '../styles/global.css';
+import Banner from '../components/Banner.astro';
+import Footer from '../components/Footer.astro';
+import { ClientRouter, fade } from 'astro:transitions';
+
+interface Props { title: string; description?: string; }
+const { title, description = 'A simulated study of PV and EV hosting capacity on a low-voltage feeder (OpenDSS and Python). Simulated, synthetic data, v0.9.' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = Astro.url.pathname.replace(/\/$/, '');
+const nav = [
+  { href: `${base}/`, label: 'Home', match: [base, ''] },
+  { href: `${base}/method/`, label: 'Method and checks', match: [`${base}/method`] },
+  { href: `${base}/about/`, label: 'About', match: [`${base}/about`] },
+];
+---
+<!doctype html>
+<html lang="en-NZ">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <title>{title}</title>
+    <ClientRouter />
+    <!-- Motion gate: only when motion is allowed. Hides the hero until motion.ts starts its entrance;
+         if motion.ts has not started within 2.5 s (slow or failed JS), the hero is shown as is. -->
+    <script is:inline>
+      (function () {
+        if (!window.matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+        var d = document.documentElement;
+        d.classList.add('js-motion');
+        setTimeout(function () { if (!d.classList.contains('motion-ready')) d.classList.remove('js-motion'); }, 2500);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div transition:persist="banner"><Banner /></div>
+    <header class="site-header" transition:persist="site-header">
+      <span class="site-title">PV + EV hosting capacity</span>
+      <nav aria-label="Main">
+        {nav.map((n) => <a href={n.href} aria-current={n.match.includes(path) ? 'page' : undefined}>{n.label}</a>)}
+      </nav>
+    </header>
+    <main id="main" transition:animate={fade({ duration: '0.22s' })}>
+      <slot />
+    </main>
+    <Footer />
+    <script>import '../scripts/motion';</script>
+  </body>
+</html>

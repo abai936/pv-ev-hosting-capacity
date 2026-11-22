@@ -1,0 +1,26 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<footer class="site-footer">
+  <div>
+    <div>
+    <p>
+      Load and EV profiles are derived from Steidl, Zabala Figueroa et al., "High-resolution residential energy load profiles under varying electrification scenarios for NZ and Germany using resLoadSIM", Zenodo v1, 8 May 2025, <code>https://zenodo.org/records/15362256</code> (linked below), licensed CC BY 4.0. The data are synthetic and NZ-parameterised. Aggregated to 30 minutes and scaled; changes were made by the author.
+    </p>
+    <p>Feeder layout (hero drawing): IEEE PES European LV Test Feeder, simplified redraw from the bus coordinates; no licence stated; not an IEEE figure.</p>
+    <p>This is a simulation study, v0.9. The code is MIT licensed; the data keep their own terms. Data sources are on the method page:</p>
+    <ul>
+      <li><a href={`${base}/method/`}>Method and checks</a></li>
+    </ul>
+    </div>
+    <div>
+    <p>Source links (all read 19 Nov 2026):</p>
+    <ul>
+      <li><a href="https://www.ea.govt.nz/documents/9545/Decision_paper_-_Maximising_benefits_from_local_electricity_generation.pdf" rel="noopener noreferrer">Electricity Authority decision paper, 7 Apr 2026</a></li>
+      <li><a href="https://www.ea.govt.nz/documents/9799/Export_limits_-_information_sheet.pdf" rel="noopener noreferrer">Electricity Authority information sheet, Export limits</a></li>
+      <li><a href="https://www.oriongroup.co.nz/assets/Connections/Orion-Congestion-Management-Policy-1-April-2026.pdf" rel="noopener noreferrer">Orion Congestion Management Policy, 1 Apr 2026</a></li>
+      <li><a href="https://zenodo.org/records/15362256" rel="noopener noreferrer">Steidl et al. dataset (Zenodo)</a></li>
+    </ul>
+    </div>
+  </div>
+</footer>

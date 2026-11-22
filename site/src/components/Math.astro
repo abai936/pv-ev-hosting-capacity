@@ -1,0 +1,10 @@
+---
+// Maths is rendered at BUILD time (no client JS). throwOnError makes a bad formula fail the build.
+import katex from 'katex';
+interface Props { tex: string; display?: boolean; label?: string; }
+const { tex, display = false, label } = Astro.props;
+const out = katex.renderToString(tex, { displayMode: display, throwOnError: true, output: 'htmlAndMathml' });
+---
+{display
+  ? <div class="math-display" role="group" aria-label={label} set:html={out} />
+  : <span class="math-inline" set:html={out} />}

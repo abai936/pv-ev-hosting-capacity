@@ -1,0 +1,119 @@
+---
+// Hand-written SVG chart: the mitigation trade-off (simulated). Three small bar panels, every axis starts at zero.
+// Grey solid = without inverter control, blue hatched = with Australia A control (fill AND pattern differ, plus value labels).
+// Static SVG: works with no JavaScript. Tooltips are CSS only (hover or keyboard focus).
+import data from '../data/chart_tradeoff.json';
+
+const W = 420, PH = 190, H = PH * 3 + 8;
+const L = 46, R = 14, T = 46, B = 34;
+const pw = W - L - R, ph = PH - T - B;
+const nice = (m: number) => { const s = [1, 2, 5, 10]; const p = 10 ** Math.floor(Math.log10(m)); return p * (s.find((k) => k * p >= m) ?? 10); };
+const fmt = (n: number) => n.toLocaleString('en-NZ', { maximumFractionDigits: 1 });
+const kind = (b: string) => (b.startsWith('line') ? 'cable' : b.startsWith('voltage') ? 'voltage' : b);
+
+const [m0, m3] = data.year;
+interface Bar { cat: string; name: string; v: number; ctrl: boolean; extra?: string; }
+interface Panel { title: string; unit: string; cats: string[]; bars: Bar[]; }
+const panels: Panel[] = [
+  { title: 'A. Customer-hours above 253 V, one year', unit: 'customer-hours', cats: ['Year, 8 kWp on 60% of houses'],
+    bars: [m0, m3].map((r) => ({ cat: 'Year, 8 kWp on 60% of houses', name: r.name, v: r.cust_hours_above_253v, ctrl: r.mode === 'M3' })) },
+  { title: 'B. Hours with any line above its assumed rating, one year', unit: 'hours', cats: ['Year, 8 kWp on 60% of houses'],
+    bars: [m0, m3].map((r) => ({ cat: 'Year, 8 kWp on 60% of houses', name: r.name, v: r.hours_line_above_rating, ctrl: r.mode === 'M3' })) },
+  { title: 'C. Snapshot hosting capacity, P1 balanced', unit: 'kW per solar house', cats: ['30% with solar', '60%', '100%'],
+    bars: data.hc.map((r) => ({ cat: r.penetration_pct === 30 ? '30% with solar' : `${r.penetration_pct}%`, name: r.name, v: r.hc_kw, ctrl: r.mode === 'M3', extra: kind(r.binding_limit) })) },
+];
+const geo = panels.map((p, pi) => {
+  const top = pi * PH;
+  const ymax = nice(Math.max(...p.bars.map((b) => b.v)) * 1.12);
+  const gw = pw / p.cats.length;
+  const bw = Math.min(gw * 0.34, 60);
+  const yy = (v: number) => top + T + ph - (v / ymax) * ph;
+  const bars = p.bars.map((b) => {
+    const ci = p.cats.indexOf(b.cat);
+    const cx = L + gw * (ci + 0.5) + (b.ctrl ? 1 : -1) * (bw / 2 + 2);
+    return { ...b, x: cx - bw / 2, w: bw, y: yy(b.v), h: top + T + ph - yy(b.v), tip: `${p.title.slice(3)}, ${b.cat}, ${b.name}: ${fmt(b.v)} ${p.unit}${b.extra ? `, limit: ${b.extra}` : ''}` };
+  });
+  return { ...p, top, ymax, gw, yy, bars, ticks: [0, 1, 2, 3, 4].map((i) => (ymax / 4) * i) };
+});
+---
+<figure class="chart">
+  <svg viewBox={`0 0 ${W} ${H}`} role="group" aria-labelledby="tr-t tr-d" class="chart-svg">
+    <title id="tr-t">Simulated mitigation trade-off: inverter control against no control</title>
+    <desc id="tr-d">Inverter control cuts customer-hours above 253 V, raises hours with a line above its assumed rating, and leaves snapshot hosting capacity almost unchanged. Values are in the table below.</desc>
+    <defs>
+      <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="6" height="6" fill="#0F52BA" /><line x1="0" y1="0" x2="0" y2="6" stroke="#fff" stroke-width="2" />
+      </pattern>
+    </defs>
+    {geo.map((p) => (
+      <g>
+        <text x={L} y={p.top + 16} class="ptitle">{p.title}</text>
+        <text x={L} y={p.top + 34} class="hint">Hover or Tab to a bar to read it here.</text>
+        {p.ticks.map((t) => (<g><line x1={L} x2={W - R} y1={p.yy(t)} y2={p.yy(t)} class="grid" /><text x={L - 6} y={p.yy(t) + 4} class="tick" text-anchor="end">{fmt(t)}</text></g>))}
+        <line x1={L} x2={L} y1={p.top + T} y2={p.top + T + ph} class="axis" />
+        <line x1={L} x2={W - R} y1={p.top + T + ph} y2={p.top + T + ph} class="axis" />
+        {p.cats.map((c, i) => (<text x={L + p.gw * (i + 0.5)} y={p.top + T + ph + 16} class="tick" text-anchor="middle">{c}</text>))}
+        {p.bars.map((b) => (
+          <g class="pt" tabindex="0" role="img" aria-label={b.tip}>
+            <title>{b.tip}</title>
+            <rect x={b.x} y={b.y} width={b.w} height={Math.max(b.h, 0)} class={b.ctrl ? 'bar ctrl' : 'bar noctrl'} />
+            <text x={b.x + b.w / 2} y={b.y - 5} class="val" text-anchor="middle">{fmt(b.v)}</text>
+            {b.extra && <text x={b.x + b.w / 2} y={b.y + 13} class="inbar" text-anchor="middle">{b.extra}</text>}
+            <text x={L} y={p.top + 34} class="tip">{b.tip}</text>
+          </g>
+        ))}
+      </g>
+    ))}
+  </svg>
+  <ul class="legend">
+    <li><svg width="18" height="12" aria-hidden="true"><rect x="0" y="0" width="18" height="12" class="bar noctrl" /></svg> grey, solid: without inverter control</li>
+    <li><svg width="18" height="12" aria-hidden="true"><rect x="0" y="0" width="18" height="12" class="bar ctrl" /></svg> blue, hatched: with Australia A volt-var and volt-watt control</li>
+  </ul>
+  <figcaption>
+    <strong>Simulated.</strong> Panels A and B: year 2022, 30-minute steps, 8 kWp on 60% of houses, tap 1.000; 30-minute steps hide short peaks. Panel C: midday summer snapshot. Synthetic NZ-parameterised load, cable ratings assumed (so thermal hours are relative, not absolute), source 1.00 pu. Inverter curve points are from free summaries, not the paywalled standard. Sources: <code>{data.source_files[0]}</code>, <code>{data.source_files[1]}</code>.
+  </figcaption>
+  <details class="chart-table">
+    <summary>Data table</summary>
+    <table>
+      <caption class="sr-only">Simulated mitigation trade-off values</caption>
+      <thead><tr><th scope="col">Measure</th><th scope="col">Without control</th><th scope="col">With control</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Customer-hours above 253 V (year)</th><td>{fmt(m0.cust_hours_above_253v)}</td><td>{fmt(m3.cust_hours_above_253v)}</td></tr>
+        <tr><th scope="row">Hours with any line above assumed rating (year)</th><td>{fmt(m0.hours_line_above_rating)}</td><td>{fmt(m3.hours_line_above_rating)}</td></tr>
+        {[30, 60, 100].map((pen) => {
+          const a = data.hc.find((r) => r.mode === 'M0' && r.penetration_pct === pen)!;
+          const b = data.hc.find((r) => r.mode === 'M3' && r.penetration_pct === pen)!;
+          return <tr><th scope="row">Snapshot HC at {pen}% (kW per solar house), limit {kind(a.binding_limit)}</th><td>{fmt(a.hc_kw)}</td><td>{fmt(b.hc_kw)}</td></tr>;
+        })}
+      </tbody>
+    </table>
+  </details>
+</figure>
+<style>
+  .chart { max-width: 40rem; }
+  /* Wide screens: plot on the left, legend, caption and table beside it, so the plot can be large. */
+  @media (min-width: 56rem) {
+    .chart { display: grid; grid-template-columns: minmax(0, 36rem) minmax(0, 1fr); gap: 0 var(--s-5); align-items: start; }
+    .chart .chart-svg { grid-row: 1 / span 3; }
+    .chart .legend, .chart figcaption, .chart .chart-table { grid-column: 2; margin-top: 0; }
+  }
+  .chart-svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--grid); }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .axis { stroke: var(--ink); stroke-width: 1.2; }
+  .tick, .hint { font: 11px var(--font-head); fill: var(--ink); }
+  .ptitle { font: 700 12.5px var(--font-head); fill: var(--ink); }
+  .bar { stroke: var(--ink); stroke-width: 1; }
+  .bar.noctrl { fill: #7D8B98; } /* 3.49 on white, plus ink outline */
+  .bar.ctrl { fill: url(#hatch); }
+  .val { font: 700 12px var(--font-head); fill: var(--ink); }
+  .inbar { font: 600 10px var(--font-head); fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 3px; }
+  .tip { display: none; font: 600 11px var(--font-head); fill: var(--ink); }
+  .pt:hover .tip, .pt:focus .tip { display: block; }
+  .pt:focus { outline: none; }
+  .pt:focus .bar { stroke: var(--limit-text); stroke-width: 3; }
+  .legend { list-style: none; padding: 0; margin: 0.6rem 0; font-size: 0.9rem; }
+  .legend li { margin: 0.2rem 0; display: flex; gap: 0.5rem; align-items: center; }
+  .legend svg { flex: none; }
+  .chart-table table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+  .chart-table th, .chart-table td { border: 1px solid var(--grid); padding: 0.3rem 0.5rem; text-align: left; }
+</style>

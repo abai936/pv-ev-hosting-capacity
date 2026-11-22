@@ -1,0 +1,92 @@
+{
+  "cp02_single_phase": {
+    "width": 1200,
+    "height": 643,
+    "origWidth": 1295,
+    "origHeight": 694
+  },
+  "cp02_transformer_noload": {
+    "width": 1042,
+    "height": 674,
+    "origWidth": 1042,
+    "origHeight": 674
+  },
+  "cp03_base_case": {
+    "width": 1081,
+    "height": 703,
+    "origWidth": 1081,
+    "origHeight": 703
+  },
+  "cp03_invcontrol": {
+    "width": 1094,
+    "height": 674,
+    "origWidth": 1094,
+    "origHeight": 674
+  },
+  "cp04_hc_vs_penetration": {
+    "width": 1064,
+    "height": 700,
+    "origWidth": 1064,
+    "origHeight": 700
+  },
+  "cp04_sensitivity": {
+    "width": 1153,
+    "height": 703,
+    "origWidth": 1153,
+    "origHeight": 703
+  },
+  "cp05_profiles": {
+    "width": 1200,
+    "height": 882,
+    "origWidth": 1371,
+    "origHeight": 1008
+  },
+  "cp06_hc_nz_vs_feeder": {
+    "width": 1029,
+    "height": 723,
+    "origWidth": 1029,
+    "origHeight": 723
+  },
+  "cp06_year_violations": {
+    "width": 1200,
+    "height": 671,
+    "origWidth": 1292,
+    "origHeight": 722
+  },
+  "cp07_ev_hc_vs_placement": {
+    "width": 1200,
+    "height": 648,
+    "origWidth": 1507,
+    "origHeight": 814
+  },
+  "cp07_year_ev_lowvoltage": {
+    "width": 1200,
+    "height": 839,
+    "origWidth": 1282,
+    "origHeight": 896
+  },
+  "cp08_hc_mitigation": {
+    "width": 1200,
+    "height": 683,
+    "origWidth": 1346,
+    "origHeight": 766
+  },
+  "cp08_year_curtailment": {
+    "width": 1200,
+    "height": 497,
+    "origWidth": 1869,
+    "origHeight": 774
+  },
+  "cp09b_backtest": {
+    "width": 1200,
+    "height": 509,
+    "origWidth": 1801,
+    "origHeight": 764
+  },
+  "cp09b_scenarios_vs_hc": {
+    "width": 1200,
+    "height": 542,
+    "origWidth": 1688,
+    "origHeight": 763
+  }
+}

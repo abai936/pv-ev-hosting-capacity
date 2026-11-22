@@ -1,0 +1,2 @@
+customer,ev_kw,I_at_230V_A,lines_on_path,predicted_V,opendss_V,error_pct,note
+load53,7.4,32.17,151,7.460249731744397,7.462144830866009,0.02540262309917782,"all other loads off, source 1.00 pu; current = P / solved customer voltage"

@@ -1,0 +1,5 @@
+source_pu,v_min_V,v_max_V,minutes_above_253V,minutes_below_207V,xfmr_max_kVA,vuf_max_pct_assumed_limit_2,nonconverged_steps,runtime_s,note
+0.98,217.55,238.96,0,0,62.83,1.472,0,2.58,"minutes counted if ANY customer node violates; synthetic NZ-parameterised, no PV"
+1.0,222.76,243.68,0,0,62.72,1.407,0,2.34,"minutes counted if ANY customer node violates; synthetic NZ-parameterised, no PV"
+1.025,229.25,249.59,0,0,62.6,1.332,0,2.42,"minutes counted if ANY customer node violates; synthetic NZ-parameterised, no PV"
+1.05,235.72,255.5,51,0,62.48,1.264,0,2.41,"minutes counted if ANY customer node violates; synthetic NZ-parameterised, no PV"

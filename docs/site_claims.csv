@@ -1,0 +1,68 @@
+claim,value_text,source_file,site_text
+Feeder customers,55 customers,README.md,55 customers
+Feeder buses,907 buses,README.md,907 buses
+NZ low-voltage limit,207 to 253 V,README.md,207 to 253 V
+HC at 30/60/100% balanced,9.5 / 5.0 / 2.7 kW,results/stage8_summary.md,9.5 / 5.0 / 2.7 kW
+Voltage-only HC at 60%,| P1 | 0.6 | 33 | L2 | 5.0 | 5.0 | 6.0 |,results/stage6_snapshot_summary.md,6.0 kW at 60%
+HC at 60% with source 1.05 pu,| 1.05 | 0.9 | 0.9 |,results/stage6_snapshot_summary.md,1.05 pu the 60% result falls to 0.9 kW
+Random placement 60% P5/P50/P95,| L2 | 0.6 | 5.0 | 4.0 | 3.1 | 3.9 | 4.7 |,results/stage6_snapshot_summary.md,3.1 / 3.9 / 4.7
+"Hours above 253 V, no control to control",1330.0 to 38.5,results/stage8_summary.md,"1,330 to 38.5"
+HC with control 30/60/100%,M3 9.3 / 4.9 / 2.7 kW,results/stage8_summary.md,9.3 / 4.9 / 2.7
+"Hours any line above rating, M0 to M3",326.5 (M0) to 582.5,results/stage8_summary.md,326.5 to 582.5
+Transformer peak M0 to M3,195.1 to 216.6 kVA,results/stage8_summary.md,195.1 to 216.6
+Tap helps clustered solar at 30%,5.4 to 7.5 kW (30 %),results/stage8_summary.md,5.4 to 7.5
+"Lowest voltage no EV, tap 1.000 to 0.975",233.25 V to 227.08 V,results/stage8_summary.md,233.25 V to 227.08 V
+Bug: values order-dependent,"730 of 1,272",VALIDATION.md,"730 of 1,272"
+Bug: largest shift,1.07 kW,VALIDATION.md,1.07 kW
+Benchmark OpenDSS worst case,0.003 V worst,VALIDATION.md,0.003
+Benchmark GridLAB-D worst case,0.001 V worst,VALIDATION.md,0.001
+Hand check far-end rise,4.787218,results/stage4_hand_check.csv,4.787 V
+Hand check error,-0.011784,results/stage4_hand_check.csv,-0.012%
+Validation rows,| 32 | Summer-midday and winter-evening time masks,VALIDATION.md,32 rows
+Typical evening EV count,6 of 55 houses can charge a 7.4 kW EV,README.md,6 of 55 houses
+Busy evening EV count,2 of 55 (3.6 %),results/stage9b_summary.md,2 of 55 houses (3.6%)
+EV random placement P5/P50/P95,2/5/7,results/stage7_summary.md,2 / 5 / 7
+EV charger size,7.4 kW,results/stage7_summary.md,7.4 kW
+EV HC rating change +5%,6 to 9,LIMITATIONS.md,6 to 9
+EV session median kWh,6.9,LIMITATIONS.md,6.9 kWh
+Year steps,17520,results/stage6_year.csv,"17,520"
+Year Y2 customer-hours above 253 V,"Y2,5.0,33,17520,0,4.5",results/stage6_year.csv,4.5
+Year Y3 customer-hours above 253 V,1330.0,results/stage6_year.csv,"1,330"
+Year Y0 hours line above rating,141.5,results/stage6_year.csv,141.5
+Backtest MAE solar,naive 0.13,results/stage9b_summary.md,0.13
+Backtest MAE EV,EV 0.92,results/stage9b_summary.md,0.92
+80% band coverage solar,40 %,results/stage9b_summary.md,40%
+80% band coverage EV,27 %,results/stage9b_summary.md,27%
+Solar share Dec 2027,5.0/5.1/5.6 %,results/stage9b_summary.md,5.0 / 5.1 / 5.6
+Penetration where today-size system exceeds HC,about 34 %,results/stage9b_summary.md,about 34
+HC with 4 solar houses,18.5 kW,results/stage9b_summary.md,18.5 kW per house
+BEV per connection Dec 2027,4.7/5.4/9.4 %,results/stage9b_summary.md,4.7 / 5.4 / 9.4
+Limits panel item count,16. **No battery,LIMITATIONS.md,16 items
+Transformer rating,800 kVA,results/stage6_snapshot_summary.md,800 kVA
+Chart: P2 end-clustered HC at 30/60/100%,"P2,,0.3,17,,L2,1.0,neutral_return,5.38",results/stage6_snapshot_hc.csv,"P2 end-clustered, 30%: 5.38 kW"
+Chart: P3 random HC P5/P50/P95 at 30%,| L2 | 0.3 | 9.5 | 5.4 | 4.5 | 6.0 | 8.4 |,results/stage6_snapshot_summary.md,"P3 random, 30%: P5 4.5, P50 6.0, P95 8.4 kW"
+Chart: P3 random HC P5/P50/P95 at 100%,| L2 | 1.0 | 2.7 | 2.7 | 2.7 | 2.7 | 2.7 |,results/stage6_snapshot_summary.md,"P3 random, 100%: P5 2.7, P50 2.7, P95 2.7 kW"
+Chart: P1 balanced HC unrounded at 60% and 100%,"P1,,0.6,33,,L2,1.0,neutral_return,5.03",results/stage6_snapshot_hc.csv,"P1 balanced, 60%: 5.03 kW"
+EA default export limit,10 kW default,research/R12-nz-export-limit-context.md,10 kW
+EA date: default limit,11 May 2026,research/R12-nz-export-limit-context.md,11 May 2026
+EA date: Australia A,11 Sep 2026,research/R12-nz-export-limit-context.md,11 Sep 2026
+EA date: ELAM required,11 Nov 2026,research/R12-nz-export-limit-context.md,11 Nov 2026
+Orion step size,1 kW per phase,research/R12-nz-export-limit-context.md,1 kW per phase
+Orion cap,10 kW per phase,research/R12-nz-export-limit-context.md,10 kW per phase
+NZ limit start date,13 Nov 2025,research/R3-nz-standards-and-limits.md,13 Nov 2025
+EV count before voltage binds,before 30 EVs,results/stage7_summary.md,30 EVs
+EV random placement orders,P3 (P5/P50/P95 of 50),results/stage7_summary.md,50 orders
+Hand check OpenDSS rise,4.786654,results/stage4_hand_check.csv,4.786654
+Far-end rise hand value,4.787218,results/stage4_hand_check.csv,4.787218 V by hand
+Far-end rise OpenDSS value,4.786654,results/stage4_hand_check.csv,4.786654 V in OpenDSS
+No-load V at 1.00 pu,240.1777,results/stage2_toy_checks.csv,240.1777 V
+No-load V at 1.05 pu,252.1866,results/stage2_toy_checks.csv,252.1866 V
+HC worked example inputs,195 A x 245 V,VALIDATION.md,195 A x 245 V
+HC worked example local load,12.8 kW local load,checkpoints/CP-04-stage4-snapshot-hc.md,12.8 kW local load
+HC worked example by hand,2.88 kW,VALIDATION.md,2.88 kW by hand
+HC worked example OpenDSS,2.91 kW,VALIDATION.md,2.91 kW from OpenDSS
+Bisection 1 kW steps,1 kW steps,src/hc/hosting.py,1 kW steps
+Bisection to 0.01 kW,bisected to 0.01 kW,src/hc/hosting.py,bisected to 0.01 kW
+VUF formula in code,VUF = |V2| / |V1| x 100,src/hc/feeder.py,VUF = |V2| / |V1| x 100
+VUF hand calc,2.51 %,VALIDATION.md,2.51 %
+Energy balance form,load + losses - PV = transformer energy,VALIDATION.md,load + losses - PV = transformer energy
